@@ -44,7 +44,7 @@ def createMap(fileName,player):
 			elif map[row][column] == "X":#invisible wall
 				boxes.append(Invisible(column*75, row*75))
 
-def LoadNextLevel(player,levels):
+def LoadNextLevel(player,levels): #loads future levels
 	global level
 	print("starting next level")
 	pygame.display.flip()
