@@ -37,7 +37,7 @@ def createMap(fileName,player):
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
 			elif map[row][column] == "#":#END
 				boxes.append(Sky(column*75, row*75))
-				boxes.append(EndPoint(column*75, 380))
+				boxes.append(EndPoint(column*75, 380))#flag goes from base to top
 			elif map[row][column] == "@":#player
 				boxes.append(Sky(column*75, row*75))
 				player.rect.x,player.rect.y = column*75,row*75+20
@@ -50,7 +50,7 @@ def LoadNextLevel(player,levels):
 	pygame.display.flip()
 	player.attacks = []
 	player.xVel,player.yVel,player.grounded = 0.00001,0,True #resets player values, v != 0 to reset cameraoffset
-	level += 1
+	level += 1 #increments level by 1
 	createMap(levels[level],player)
 
 #-----------SETTING UP THE GAME SCREEN-----------------
@@ -68,8 +68,8 @@ def main():
 	done = False
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
-	player = Player(100, 100) #fix camera offset
-	levels = ["Level1.txt","Level2.txt","Level3.txt"]
+	player = Player(100, 100) 
+	levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 
 	createMap(levels[level],player)
 
