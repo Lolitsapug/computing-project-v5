@@ -59,8 +59,9 @@ WIDTH = 1280
 HEIGHT = 720
 BACKGROUND = (69,127,187) #blue
 
-def main():
-	gameTime = 0
+def main():#initial game initialisation
+
+	gameTime = 0 #timer for leaderboard? WIP to implement
 	print("starting game")
 	surface = pygame.Surface((WIDTH, HEIGHT))
 	dt = 0

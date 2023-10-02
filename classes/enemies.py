@@ -17,8 +17,8 @@ class Slime(Enemy):
 		self.distance = 150
 		self.startx = startx
 	
-	def update(self,dt,player):
-		if abs(self.startx - self.rect.centerx) >= self.distance:
+	def update(self,dt,player): #make slime detect player distance from center point and then chase player within range??? WIP!!!
+		if abs(self.startx - self.rect.centerx) >= self.distance: #slime only moves left and right
 			self.speed = -self.speed
 			if self.speed == -0.1:
 				self.rect.centerx = self.startx+self.distance
@@ -28,7 +28,7 @@ class Slime(Enemy):
 		self.move(dt)
 
 	def move(self,dt):
-		self.rect.move_ip([self.speed*dt,0]) 
+		self.rect.move_ip([self.speed*dt,0]) #slime has no y velocity
 	
 	def draw(self, screen):
 		cameraOffset = getOffset()

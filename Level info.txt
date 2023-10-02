@@ -1,0 +1,2 @@
+Leave 7 columns to the left and 13 columns to the right
+For 'infinite' background effect
