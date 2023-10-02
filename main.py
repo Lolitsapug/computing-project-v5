@@ -7,7 +7,7 @@ from classes.enemies import Slime, Bat
 player = None
 boxes = []
 enemies = []
-level = 0
+level = 0 #indicates what level to load
 
 def createMap(fileName,player):
 	global boxes,enemies
