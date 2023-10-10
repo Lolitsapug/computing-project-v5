@@ -164,8 +164,7 @@ class Player(Sprite):
 						jump = True #calls for jump animation
 						self.grounded = False
 				if key[pygame.K_DOWN]: #debug & testing
-					self.rect.y = 1080
-					self.rect.x = 1920
+					print("down")
 				if key[pygame.K_1]:
 					self.weapon = 0 #select slash attack
 				if key[pygame.K_2]:
