@@ -8,6 +8,7 @@ player = None
 boxes = []
 enemies = []
 level = 0 #indicates what level to load
+gameTime = 0 #timer for leaderboard? WIP to implement
 
 def createMap(fileName,player):
 	global boxes,enemies
@@ -53,40 +54,10 @@ def LoadNextLevel(player,levels): #loads future levels
 	level += 1 #increments level by 1
 	createMap(levels[level],player)
 
-#-----------SETTING UP THE GAME SCREEN-----------------
-
-WIDTH = 1280
-HEIGHT = 720
-BACKGROUND = (69,127,187) #blue
-
-def main():#initial game initialisation
-
-	gameTime = 0 #timer for leaderboard? WIP to implement
-	print("starting game")
-	surface = pygame.Surface((WIDTH, HEIGHT))
-	dt = 0
-	pygame.init()
-	done = False
-	screen = pygame.display.set_mode((WIDTH, HEIGHT))
-	clock = pygame.time.Clock()
-	player = Player(100, 100) 
-	levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
-
-	createMap(levels[level],player)
-
-
-#----------------- MAIN GAME LOOP START----------------------------	
-	while done == False:
-#----------------- CHECK FOR EVENTS START--------------------------
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				done = True
-				
+def gameLoop(dt,surface,screen,clock,player,levels):	
+		global gameTime
 		pygame.event.pump()
-		
-#----------------- CHECK FOR EVENTS END----------------------------
-
-#----------------- GAME LOGIC START--------------------------------
+	#----------------- GAME LOGIC START--------------------------------
 		gameTime += clock.get_time()
 		surface.fill(BACKGROUND)
 		for box in boxes:
@@ -125,12 +96,8 @@ def main():#initial game initialisation
 				update = attack.update(clock,player.rect,player.right, dt) #player slash attack
 			if update == "remove":
 				player.removeAttack(attack)
-		
 
-#----------------- GAME LOGIC END ---------------------------------
-
-#----------------- DRAWING START-----------------------------------
-
+	#----------------- DRAWING START-----------------------------------
 		for enemy in enemies:
 			enemy.draw(surface)
 
@@ -142,8 +109,52 @@ def main():#initial game initialisation
 		scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 		screen.blit(scaledSurface, (0, 0))
 
-		if player.rect.x == 1920 and player.rect.y == 1080:
-			LoadNextLevel(boxes,enemies,player)
+	#------------------ END OF GAME LOOP --------------------------------
+
+def shopLoop(surface,screen,clock,player):
+	pygame.event.pump()
+	#shop pages, buttons, coin counter
+
+def menuLoop(surface,screen,clock):
+	pygame.event.pump()
+	#start game, load level txt, leaderboard
+
+def deathLoop(surface,screen,clock,gameTime):
+	pygame.event.pump()
+	#death screen, your score, time taken, update leaderboard
+
+
+#-------------------- MAIN LOOP -----------------------
+WIDTH = 1280
+HEIGHT = 720
+BACKGROUND = (69,127,187) #blue
+
+def main():#initial game initialisation
+	print("starting game")
+	pygame.init()
+
+	done = False
+	dt = 0
+	loop = "game" #switches between menu and game
+	surface = pygame.Surface((WIDTH, HEIGHT))
+	screen = pygame.display.set_mode((WIDTH, HEIGHT))
+	clock = pygame.time.Clock()
+	player = Player(100, 100) 
+	levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
+
+	createMap(levels[level],player)
+
+#----------------- MAIN GAME LOOP START----------------------------	
+	while done == False:
+		
+		if loop == "game":
+			gameLoop(dt,surface,screen,clock,player,levels)
+		elif loop == "shop":
+			shopLoop(surface,screen,clock,player)
+		elif loop == "menu":
+			menuLoop(surface,screen,clock)
+		elif loop == "gameOver":
+			deathLoop(surface,screen,clock,gameTime)
 
 		pygame.display.flip()
 		
