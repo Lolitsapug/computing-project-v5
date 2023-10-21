@@ -68,7 +68,7 @@ class Player(Sprite):
 		if self.right == False:#flips image if facing left (images default face right)
 			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex/15)],True,False), (x,y))
 		else: #player moving right
-				screen.blit(self.images[round(self.animationIndex/15)], (x,y))
+			screen.blit(self.images[round(self.animationIndex/15)], (x,y))
 	
 	def collisions(self,boxes,dt):
 		end = False
