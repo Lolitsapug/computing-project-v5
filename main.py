@@ -138,9 +138,9 @@ def menuLoop(surface,screen,buttons):
 					clicked = b
 
 	if clicked == "start": #MAKE THESE LINK TO THERE FUNCTIONS
-		print("1") #loadnextlevel, loop = "game"
+		print("1") #createmap(level1.txt), levels = [level1,level2,level3,...,bossfight], loop = "game"
 	elif clicked == "loadTxt":
-		print("2") #loadnextlevel(txt), loop = "game"
+		print("2") #txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
 	elif clicked == "leaderboard":
 		print("3") #load a leaderboard page
 	elif clicked == "exit":
