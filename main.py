@@ -85,6 +85,9 @@ def gameLoop(dt,surface,screen,clock,player,levels):
 					print(f"player health:{player.health}")
 					if player.health == 0: # player dies at 0 health
 						player.dead = True
+						#"click a button to exit"
+						#check for any button press
+						#load death menu, show score & time,"do you want to update leaderboard", redirect to menu page
 					if enemy.type == "bat": 
 						enemies.remove(enemy)
 						break #enemies like bats die
