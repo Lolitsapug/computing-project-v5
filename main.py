@@ -74,7 +74,7 @@ def gameLoop(dt,surface,screen,clock,player):
 		player.update(dt,clock,surface)
 		if player.collisions(boxes,dt):
 			print("flag collision?")
-			LoadNextLevel(player,levels) #if collision with end flag loads next level
+			LoadNextLevel(player) #if collision with end flag loads next level
 
 		for enemy in enemies: #player collisions with enemy
 			enemy.update(dt,player)
