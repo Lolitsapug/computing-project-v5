@@ -192,9 +192,9 @@ def main():#initial game initialisation
 	clock = pygame.time.Clock()
 	player = Player(100, 100) 
 	menubuttons = { #ADD IMAGE FILES
-		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,200,250,100)],
+		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,250,250,100)],
 		"loadTxt":[pygame.image.load("menuImages/LOADbutton.png"),pygame.Rect(160,400,250,100)],
-		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(870,200,250,100)],
+		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(870,250,250,100)],
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]
 	}
 
