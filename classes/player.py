@@ -26,7 +26,7 @@ speed = 0.0008
 class Player(Sprite):
 	def __init__(self, startx, starty):
 		super().__init__(idle+run+damage+jump+attack+death, startx, starty,"player")
-		self.xVel = 0
+		self.xVel = 0.001
 		self.yVel = 0
 		self.xMaxSpeed = 0.29
 		self.yMaxSpeed = 0.40

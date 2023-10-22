@@ -90,6 +90,7 @@ def gameLoop(dt,surface,screen,clock,player):
 						#"click a button to exit"
 						#check for any button press
 						#load death menu, show score & time,"do you want to update leaderboard", redirect to menu page
+						return "menu"
 					if enemy.type == "bat": 
 						enemies.remove(enemy)
 						break #enemies like bats die
@@ -119,6 +120,7 @@ def gameLoop(dt,surface,screen,clock,player):
 		
 		scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 		screen.blit(scaledSurface, (0, 0))
+		return "game"
 
 	#------------------ END OF GAME LOOP --------------------------------
 
@@ -127,7 +129,7 @@ def shopLoop(screen,player):
 	#shop pages, buttons, coin counter
 
 def menuLoop(surface,screen,buttons):
-	global done,level,levels
+	global done,level,levels,player
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -145,6 +147,7 @@ def menuLoop(surface,screen,buttons):
 	if clicked == "start": #MAKE THESE LINK TO THEIR FUNCTIONS
 		levels = ["Level1.txt","Level2.txt","Level3.txt"]
 		level = 0
+		player = Player(100,100)
 		createMap(levels[level],player)
 		return "game"
 	elif clicked == "loadTxt":
@@ -152,6 +155,7 @@ def menuLoop(surface,screen,buttons):
 		#txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
 		#levels = ["customMap.txt","BossLevel.txt"]
 		level = 0
+		player = Player(100, 100) 
 		createMap(levels[level],player)
 		return "game"	
 	elif clicked == "leaderboard":
@@ -207,7 +211,7 @@ def main():#initial game initialisation
 	while done == False:
 		
 		if loop == "game":
-			gameLoop(dt,surface,screen,clock,player)
+			loop = gameLoop(dt,surface,screen,clock,player)
 		elif loop == "shop":
 			shopLoop(surface,screen,player)
 		elif loop == "menu":
