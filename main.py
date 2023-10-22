@@ -198,6 +198,11 @@ def main():#initial game initialisation
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]
 	}
 
+	pygame.mixer.init()
+	pygame.mixer.music.load("Grasslands Theme.mp3")
+	pygame.mixer.music.set_volume(0.25)
+	pygame.mixer.music.play(loops=-1)
+
 #----------------- MAIN GAME LOOP START----------------------------	
 	while done == False:
 		
