@@ -8,8 +8,10 @@ player = None
 boxes = []
 enemies = []
 level = 0 #indicates what level to load
+levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 gameTime = 0 #timer for leaderboard? WIP to implement
 done = False
+bg = pygame.image.load("menuImages/catlegendsbackground.png")
 
 def createMap(fileName,player):
 	global boxes,enemies
@@ -46,7 +48,7 @@ def createMap(fileName,player):
 			elif map[row][column] == "X":#invisible wall
 				boxes.append(Invisible(column*75, row*75))
 
-def LoadNextLevel(player,levels): #loads future levels
+def LoadNextLevel(player): #loads future levels
 	global level
 	print("starting next level")
 	pygame.display.flip()
@@ -55,7 +57,7 @@ def LoadNextLevel(player,levels): #loads future levels
 	level += 1 #increments level by 1
 	createMap(levels[level],player)
 
-def gameLoop(dt,surface,screen,clock,player,levels):	
+def gameLoop(dt,surface,screen,clock,player):	
 		global gameTime,done
 		for events in pygame.event.get():
 			if events.type == pygame.QUIT:
@@ -125,7 +127,7 @@ def shopLoop(screen,player):
 	#shop pages, buttons, coin counter
 
 def menuLoop(surface,screen,buttons):
-	global done
+	global done,level,levels
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -140,26 +142,32 @@ def menuLoop(surface,screen,buttons):
 					print(b + " was clicked")
 					clicked = b
 
-	if clicked == "start": #MAKE THESE LINK TO THERE FUNCTIONS
-		print("1") #createmap(level1.txt), levels = [level1,level2,level3,...,bossfight], loop = "game"
+	if clicked == "start": #MAKE THESE LINK TO THEIR FUNCTIONS
+		levels = ["Level1.txt","Level2.txt","Level3.txt"]
+		level = 0
+		createMap(levels[level],player)
+		return "game"
 	elif clicked == "loadTxt":
-		print("2") #txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
+		#txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
+		#levels = ["customMap.txt","BossLevel.txt"]
+		level = 0
+		createMap(levels[level],player)
+		return "game"	
 	elif clicked == "leaderboard":
 		print("3") #load a leaderboard page
 	elif clicked == "exit":
 		print("quitting game")
 		done = True
-		pygame.quit()
-		
-
+		pygame.quit()		
 	#------------------ DRAWING SURFACE ---------------------
-	surface.fill((71, 71, 71))
+	surface.blit(bg,(0,0))
 	for b in buttons:
-		pygame.draw.rect(surface,(0,0,0),buttons[b][1])
-		#surface.blit(buttons[b][0],buttons[b[2]]) #blits to surface (button image,button rect)
+		#pygame.draw.rect(surface,(0,0,0),buttons[b][1])
+		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
 	
 	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 	screen.blit(scaledSurface, (0, 0))
+	return "menu"
 	#------------------ END OF MENU LOOP ---------------------
 
 def deathLoop(screen,gameTime):
@@ -173,6 +181,7 @@ HEIGHT = 720
 BACKGROUND = (69,127,187) #blue
 
 def main():#initial game initialisation
+	global player
 	print("starting game")
 	pygame.init()
 
@@ -182,26 +191,22 @@ def main():#initial game initialisation
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
 	player = Player(100, 100) 
-	levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
-
-	createMap(levels[level],player)
-
 	menubuttons = { #ADD IMAGE FILES
-		"start":["image.txt",pygame.Rect(340,50,600,100)],
-		"loadTxt":["image2.txt",pygame.Rect(340,200,600,100)],
-		"leaderboard":["image3.txt",pygame.Rect(340,350,600,100)],
-		"exit":["image4.txt",pygame.Rect(340,500,600,100)]
+		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,200,250,100)],
+		"loadTxt":[pygame.image.load("menuImages/LOADbutton.png"),pygame.Rect(160,400,250,100)],
+		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(870,200,250,100)],
+		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]
 	}
 
 #----------------- MAIN GAME LOOP START----------------------------	
 	while done == False:
 		
 		if loop == "game":
-			gameLoop(dt,surface,screen,clock,player,levels)
+			gameLoop(dt,surface,screen,clock,player)
 		elif loop == "shop":
 			shopLoop(surface,screen,player)
 		elif loop == "menu":
-			menuLoop(surface,screen,menubuttons)
+			loop = menuLoop(surface,screen,menubuttons)
 		elif loop == "gameOver":
 			deathLoop(surface,screen,gameTime)
 
