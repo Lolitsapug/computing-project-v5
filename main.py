@@ -148,13 +148,14 @@ def menuLoop(surface,screen,buttons):
 		createMap(levels[level],player)
 		return "game"
 	elif clicked == "loadTxt":
+		print("loading custom map")
 		#txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
 		#levels = ["customMap.txt","BossLevel.txt"]
 		level = 0
 		createMap(levels[level],player)
 		return "game"	
 	elif clicked == "leaderboard":
-		print("3") #load a leaderboard page
+		print("loading leaderboard") #load a leaderboard page
 	elif clicked == "exit":
 		print("quitting game")
 		done = True
@@ -162,7 +163,6 @@ def menuLoop(surface,screen,buttons):
 	#------------------ DRAWING SURFACE ---------------------
 	surface.blit(bg,(0,0))
 	for b in buttons:
-		#pygame.draw.rect(surface,(0,0,0),buttons[b][1])
 		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
 	
 	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
