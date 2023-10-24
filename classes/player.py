@@ -23,6 +23,8 @@ friction = 0.97
 jumpForce = -0.49
 speed = 0.0008
 
+Heart = pygame.image.load("menuImages/Heart.png")
+
 class Player(Sprite):
 	def __init__(self, startx, starty):
 		super().__init__(idle+run+damage+jump+attack+death, startx, starty,"player")
@@ -69,6 +71,9 @@ class Player(Sprite):
 			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex/15)],True,False), (x,y))
 		else: #player moving right
 			screen.blit(self.images[round(self.animationIndex/15)], (x,y))
+		
+		for i in range(self.health): #displays number of lives on top left of screen
+			screen.blit(Heart, (40*i+10,10))
 	
 	def collisions(self,boxes,dt):
 		end = False
@@ -149,7 +154,7 @@ class Player(Sprite):
 			self.xVel *= friction #smoothly decreases x velocity (friction)
 
 			key = pygame.key.get_pressed()#keyboard inputs
-			if self.past >= 650: #attack movement delay		 
+			if self.past >= 650: #attack movement delay
 				if key[pygame.K_LEFT] or key[pygame.K_a]:
 					if self.xVel > -self.xMaxSpeed:
 						self.xVel = self.xVel - speed*dt #adds left velocity
@@ -169,15 +174,17 @@ class Player(Sprite):
 					self.weapon = 0 #select slash attack
 				if key[pygame.K_2]:
 					self.weapon = 1	 #select projectile attack
-				if key[pygame.K_SPACE]:
-					if self.weapon == 0 and self.grounded == True and self.past >= 1500: #slash attack
-						slash = True
-						self.slash(clock)
-						
-					elif self.weapon == 1 and self.past>=900: #projectile attack
+				if key[pygame.K_SPACE]:	
+					if self.weapon == 1 and self.past>=900: #projectile attack only when selected
 						self.past = 650
 						self.fireprojectile = True
 						self.projectileArc(screen)
+
+				for events in pygame.event.get():
+					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
+						slash = self.slash(0) #moving attack
+					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 3:
+						slash = self.slash(1) #static attack
 
 			if self.weapon == 1: #projectile prediction arc
 				self.projectileArc(screen)		
@@ -200,11 +207,6 @@ class Player(Sprite):
 			if cameraOffset <= self.rect.x - 500:
 				cameraOffset = self.rect.x - 500
 		adjustOffset(cameraOffset) #sends back cameraoffset to the sprites file
-
-	def resetOffet(self):
-		cameraOffset = self.rect.x - 500
-		
-		adjustOffset(cameraOffset)
 
 	def animation(self,dt,jump,slash):
 		if self.playing: #main animation loop
@@ -257,15 +259,19 @@ class Player(Sprite):
 			self.loop = False
 			self.playing = True
 
-	def slash(self,dt):
+	def slash(self,static):
 		if self.past>=1500: #slash cooldown
 			self.past = 0
 			if self.right == True:
-				self.xVel = 0.40
+				if static == 0:
+					self.xVel = 0.40
 				self.attacks.append(Slash("slash.png", self.rect.right+25, self.rect.centery))
 			if self.right == False:
-				self.xVel = -0.40
+				if static == 0:
+					self.xVel = -0.40
 				self.attacks.append(Slash("slash(2).png", self.rect.left-25, self.rect.centery))
+			return True
+		return False
 			
 	def projectileArc(self,screen):
 		projectileVel = 0.65

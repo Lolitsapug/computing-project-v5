@@ -4,14 +4,26 @@ from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
 from classes.enemies import Slime, Bat
 
+pygame.init()
+pygame.mixer.init()
+pygame.font.init()
+
+WIDTH = 1280
+HEIGHT = 720
+BACKGROUND = (69,127,187) #blue
+
+done = False
 player = None
 boxes = []
 enemies = []
 level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 gameTime = 0 #timer for leaderboard? WIP to implement
-done = False
+score = 0
+
 bg = pygame.image.load("menuImages/catlegendsbackground.png")
+font1 = pygame.font.SysFont('freesanbold.ttf', 50)
+font2 = pygame.font.SysFont('freesanbold.ttf', 40)
 
 def createMap(fileName,player):
 	global boxes,enemies
@@ -58,23 +70,29 @@ def LoadNextLevel(player): #loads future levels
 	createMap(levels[level],player)
 
 def gameLoop(dt,surface,screen,clock,player):	
-		global gameTime,done
+		global gameTime,done,score
 		for events in pygame.event.get():
 			if events.type == pygame.QUIT:
 				done = True
 				pygame.quit()
-
 		pygame.event.pump()
 	#----------------- GAME LOGIC START--------------------------------
 		gameTime += clock.get_time()
+		#onscreen text statistics
+		timeText,scoreText,ammoText = font1.render(str(gameTime//1000),True,(0,255,0)),font2.render(str(f"score:{score}"),True,(255,255,0)),font2.render(f"ammo:{player.ammo}",True,(255,255,0))
+		timeRect,scoreRect,ammoRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect()
+		timeRect.right,timeRect.y = WIDTH-10,10
+		scoreRect.x,scoreRect.y = 15,75
+		ammoRect.x,ammoRect.y = 15,45
+
 		surface.fill(BACKGROUND)
 		for box in boxes:
 			box.draw(surface) #draws background so it doesnt cover up projectile arc
 
 		player.update(dt,clock,surface)
-		if player.collisions(boxes,dt):
+		if player.collisions(boxes,dt):#if collision with end flag loads next level
 			print("flag collision?")
-			LoadNextLevel(player) #if collision with end flag loads next level
+			LoadNextLevel(player) 
 
 		for enemy in enemies: #player collisions with enemy
 			enemy.update(dt,player)
@@ -95,13 +113,13 @@ def gameLoop(dt,surface,screen,clock,player):
 						enemies.remove(enemy)
 						break #enemies like bats die
 			for attack in player.getAttacks():
-				if enemy.checkCollisions(attack.rect) == True: #player attacks
+				if enemy.checkCollisions(attack.rect) == True: #player kills an enemy. adds 100 to score
 					enemies.remove(enemy)
-					print("enemy killed")
+					score += 100
 					if attack.type == "projectile":
 						player.removeAttack(attack)
 
-		for attack in player.getAttacks():	
+		for attack in player.getAttacks():#updates player attack for movement/removal
 			if attack.type == "projectile":
 				update = attack.update(dt,boxes) #player projectile attack
 			else:
@@ -118,6 +136,10 @@ def gameLoop(dt,surface,screen,clock,player):
 		for attack in player.getAttacks():
 			attack.draw(surface)
 		
+		surface.blit(timeText,timeRect) #time top right
+		surface.blit(scoreText,scoreRect) #score top left
+		surface.blit(ammoText,ammoRect) #ammo top left
+
 		scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 		screen.blit(scaledSurface, (0, 0))
 		return "game"
@@ -180,29 +202,24 @@ def deathLoop(screen,gameTime):
 
 
 #-------------------- MAIN LOOP -----------------------
-WIDTH = 1280
-HEIGHT = 720
-BACKGROUND = (69,127,187) #blue
+
 
 def main():#initial game initialisation
 	global player
 	print("starting game")
-	pygame.init()
-
-	dt = 0
-	loop = "menu" #switches between menus and game
 	surface = pygame.Surface((WIDTH, HEIGHT))
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
+	dt = 0
 	player = Player(100, 100) 
-	menubuttons = { #ADD IMAGE FILES
+	loop = "menu" #switches between menus and game
+	menubuttons = { 
 		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,250,250,100)],
 		"loadTxt":[pygame.image.load("menuImages/LOADbutton.png"),pygame.Rect(160,400,250,100)],
 		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(870,250,250,100)],
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]
 	}
 
-	pygame.mixer.init()
 	pygame.mixer.music.load("Grasslands Theme.mp3")
 	pygame.mixer.music.set_volume(0.25)
 	pygame.mixer.music.play(loops=-1)
