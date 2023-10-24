@@ -1,5 +1,4 @@
-import pygame
-
+import pygame #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
 from classes.enemies import Slime, Bat
@@ -18,7 +17,7 @@ boxes = []
 enemies = []
 level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
-gameTime = 0 #timer for leaderboard? WIP to implement
+gameTime = 0 #game timer (miliseconds)
 score = 0
 
 bg = pygame.image.load("menuImages/catlegendsbackground.png")
@@ -71,10 +70,10 @@ def LoadNextLevel(player): #loads future levels
 
 def gameLoop(dt,surface,screen,clock,player):	
 		global gameTime,done,score
-		for events in pygame.event.get():
+		for events in pygame.event.get():#quit game event
 			if events.type == pygame.QUIT:
 				done = True
-				pygame.quit()
+				pygame.quit() 
 		pygame.event.pump()
 	#----------------- GAME LOGIC START--------------------------------
 		gameTime += clock.get_time()
@@ -200,10 +199,7 @@ def deathLoop(screen,gameTime):
 	pygame.event.pump()
 	#death screen, your score, time taken, update leaderboard
 
-
 #-------------------- MAIN LOOP -----------------------
-
-
 def main():#initial game initialisation
 	global player
 	print("starting game")
@@ -226,7 +222,6 @@ def main():#initial game initialisation
 
 #----------------- MAIN GAME LOOP START----------------------------	
 	while done == False:
-		
 		if loop == "game":
 			loop = gameLoop(dt,surface,screen,clock,player)
 		elif loop == "shop":
@@ -237,13 +232,11 @@ def main():#initial game initialisation
 			deathLoop(surface,screen,gameTime)
 
 		pygame.display.flip()
-		
+
 #----------------- DRAWING END-------------------------------------
 		
 		dt = clock.tick(60)
 		pygame.display.set_caption("Platformer (xVelocity:"+("%.0f"%(player.xVel*100))+",yVelocity:"+("%.0f"% (player.yVel*100)) + ",fps:" + str(int(clock.get_fps())) + ")") #shows player velocities
-		
-		
 
 #----------------- MAIN GAME LOOP END ----------------------------
 	pygame.quit()
