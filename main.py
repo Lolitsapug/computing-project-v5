@@ -70,11 +70,12 @@ def LoadNextLevel(player): #loads future levels
 
 def gameLoop(dt,surface,screen,clock,player):	
 		global gameTime,done,score
+		
+		pygame.event.pump()
 		for events in pygame.event.get():#quit game event
 			if events.type == pygame.QUIT:
 				done = True
 				pygame.quit() 
-		pygame.event.pump()
 	#----------------- GAME LOGIC START--------------------------------
 		gameTime += clock.get_time()
 		#onscreen text statistics
