@@ -70,7 +70,7 @@ def LoadNextLevel(player): #loads future levels
 
 def gameLoop(dt,surface,screen,clock,player):	
 		global gameTime,done,score
-		
+
 		pygame.event.pump()
 		for events in pygame.event.get():#quit game event
 			if events.type == pygame.QUIT:
@@ -79,11 +79,13 @@ def gameLoop(dt,surface,screen,clock,player):
 	#----------------- GAME LOGIC START--------------------------------
 		gameTime += clock.get_time()
 		#onscreen text statistics
-		timeText,scoreText,ammoText = font1.render(str(gameTime//1000),True,(0,255,0)),font2.render(str(f"score:{score}"),True,(255,255,0)),font2.render(f"ammo:{player.ammo}",True,(255,255,0))
-		timeRect,scoreRect,ammoRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect()
+		timeText,scoreText,ammoText,moneyText = font1.render(str(gameTime//1000),True,(0,255,0)),font2.render(str(f"score:{score}"),True,(255,255,0)),font2.render(f"ammo:{player.ammo}",True,(255,255,0)),font2.render(f"coins:{player.money}",True,(255,255,0))
+		timeRect,scoreRect,ammoRect,moneyRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect(),moneyText.get_rect()
 		timeRect.right,timeRect.y = WIDTH-10,10
 		scoreRect.x,scoreRect.y = 15,75
 		ammoRect.x,ammoRect.y = 15,45
+		moneyRect.x,moneyRect.y = 15,105
+	
 
 		surface.fill(BACKGROUND)
 		for box in boxes:
@@ -139,6 +141,7 @@ def gameLoop(dt,surface,screen,clock,player):
 		surface.blit(timeText,timeRect) #time top right
 		surface.blit(scoreText,scoreRect) #score top left
 		surface.blit(ammoText,ammoRect) #ammo top left
+		surface.blit(moneyText,moneyRect) #money top left
 
 		scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 		screen.blit(scaledSurface, (0, 0))

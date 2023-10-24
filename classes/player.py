@@ -34,18 +34,18 @@ class Player(Sprite):
 		self.yMaxSpeed = 0.40
 		self.grounded = True
 		self.right = True
-		self.weapon = 0 #default weapon 1 (sword)
-		self.past = 1000 #cooldown for attacking
-		self.attacks = []
-		self.fireprojectile = False
+		self.dead = False
 		self.health = 5
 		self.damagetime = 2000
-		self.dead = False
-		self.ammo = 5
+		self.attacks = []
+		self.toggleArc = 0 #toggles preview arc
+		self.past = 1000 #cooldown for attacking
 		self.currentAnim = None
 		self.range = [0,0]
 		self.loop = False
 		self.playing = False
+		self.ammo = 5
+		self.money = 0
 
 	def getAttacks(self):
 		return self.attacks #returns all attacks 
@@ -171,14 +171,13 @@ class Player(Sprite):
 				if key[pygame.K_DOWN]: #debug & testing
 					print("down")
 				if key[pygame.K_1]:
-					self.weapon = 0 #select slash attack
+					self.toggleArc = 0 #turns off arc
 				if key[pygame.K_2]:
-					self.weapon = 1	 #select projectile attack
+					self.toggleArc = 1 #turn on arc
 				if key[pygame.K_SPACE]:	
 					if self.past>=900: #projectile attack only when selected
 						self.past = 650
-						self.fireprojectile = True
-						self.projectileArc(screen)
+						self.projectileArc(screen,True)
 
 				for events in pygame.event.get():
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
@@ -186,14 +185,13 @@ class Player(Sprite):
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 3:
 						slash = self.slash(1) #static attack
 
-			if self.weapon == 1: #shows projectile prediction arc
-				self.projectileArc(screen)		
+			if self.toggleArc == 1: #shows projectile prediction arc
+				self.projectileArc(screen,False)		
 
 			if self.grounded == False: #gravity	
 				if self.yVel < self.yMaxSpeed:
 					self.yVel = self.yVel + gravity*dt
 			else:
-				
 				self.yVel = 0
 
 		self.animation(dt,jump,slash) #player animatioms
@@ -246,7 +244,7 @@ class Player(Sprite):
 			self.playing = True
 		
 		if self.damagetime <=1300 and self.dead == False: #trigger for damage animation
-			if self.damagetime >0 and self.damagetime<350 or self.damagetime>700 and self.damagetime<1050 :
+			if 0<self.damagetime<350 or 700<self.damagetime<1050 :
 				self.currentAnim = "damage"	
 				self.animationIndex = damagerange*15
 				self.loop = False
@@ -273,7 +271,7 @@ class Player(Sprite):
 			return True
 		return False
 			
-	def projectileArc(self,screen):
+	def projectileArc(self,screen,fireProjectile):
 		projectileVel = 0.65
 		pX = self.rect.centerx-cameraOffset #gets player position
 		pY = self.rect.centery
@@ -294,12 +292,11 @@ class Player(Sprite):
 			for i in range(10): #prediction arc for attack
 				xS = pX + projXVel * i*30 #SUVAT using the angle to calculate predicted position
 				yS = pY + projYVel * i*30 + 0.5*0.0007*(i*30)**2
-				if self.weapon == 1:
+				if self.toggleArc == 1:
 					pygame.draw.rect(screen,(255,0,0),pygame.Rect(xS, yS, 5, 5),  2)
-			if self.fireprojectile == True: #spawns projectile
+			if fireProjectile == True: #spawns projectile
 				if self.ammo > 0: #player must have ammo to spawn a projectile
 					self.attacks.append(Projectile(self.rect.centerx, self.rect.centery, projXVel, projYVel))
-					self.fireprojectile = False 
 					self.ammo = self.ammo-1
 					print(f"{self.ammo} ammo left")
 				else:
