@@ -175,7 +175,7 @@ class Player(Sprite):
 				if key[pygame.K_2]:
 					self.weapon = 1	 #select projectile attack
 				if key[pygame.K_SPACE]:	
-					if self.weapon == 1 and self.past>=900: #projectile attack only when selected
+					if self.past>=900: #projectile attack only when selected
 						self.past = 650
 						self.fireprojectile = True
 						self.projectileArc(screen)
@@ -186,7 +186,7 @@ class Player(Sprite):
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 3:
 						slash = self.slash(1) #static attack
 
-			if self.weapon == 1: #projectile prediction arc
+			if self.weapon == 1: #shows projectile prediction arc
 				self.projectileArc(screen)		
 
 			if self.grounded == False: #gravity	
@@ -294,7 +294,8 @@ class Player(Sprite):
 			for i in range(10): #prediction arc for attack
 				xS = pX + projXVel * i*30 #SUVAT using the angle to calculate predicted position
 				yS = pY + projYVel * i*30 + 0.5*0.0007*(i*30)**2
-				pygame.draw.rect(screen,(255,0,0),pygame.Rect(xS, yS, 5, 5),  2)
+				if self.weapon == 1:
+					pygame.draw.rect(screen,(255,0,0),pygame.Rect(xS, yS, 5, 5),  2)
 			if self.fireprojectile == True: #spawns projectile
 				if self.ammo > 0: #player must have ammo to spawn a projectile
 					self.attacks.append(Projectile(self.rect.centerx, self.rect.centery, projXVel, projYVel))

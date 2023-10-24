@@ -8,6 +8,13 @@ class Enemy(Sprite):
 	def checkCollisions(self,rect):
 		if self.rect.colliderect(rect):
 			return True
+	
+	def draw(self,screen):
+		cameraOffset = getOffset()
+		if self.xVel <0:
+			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex//15)],True,False), (self.rect.x-cameraOffset, self.rect.y))
+		else:
+			screen.blit(self.images[round(self.animationIndex//15)], (self.rect.x-cameraOffset, self.rect.y))
 		
 class Slime(Enemy):
 	def __init__(self, startx , starty):
@@ -33,13 +40,13 @@ class Slime(Enemy):
 	def draw(self, screen):
 		cameraOffset = getOffset()
 		if self.speed <0:
-			screen.blit(pygame.transform.flip(self.images[self.animationIndex//15],True,False), (self.rect.x-cameraOffset, self.rect.y))
+			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex//15)],True,False), (self.rect.x-cameraOffset, self.rect.y))
 		else:
-			screen.blit(self.images[self.animationIndex//15], (self.rect.x-cameraOffset, self.rect.y))
+			screen.blit(self.images[round(self.animationIndex//15)], (self.rect.x-cameraOffset, self.rect.y))
 
 class Bat(Enemy):
 	def __init__(self, startx , starty):
-		super().__init__(["slime-idle-1.png"], startx, starty,"bat")
+		super().__init__(["animations/bat/bat(1).png","animations/bat/bat(2).png","animations/bat/bat(1).png"], startx, starty,"bat")
 		self.xOffset = 0
 		self.speed = 0.35
 		self.range = 350
@@ -53,8 +60,9 @@ class Bat(Enemy):
 			self.xVel = 0
 			self.yVel = 0
 
-	def boxCollisions(self,dt,boxes): #mainly same as player collisions
-		
+		self.animation(dt)
+
+	def boxCollisions(self,dt,boxes): #mainly same as player collisions	
 		temprect = pygame.Rect(self.rect.x+self.xVel,self.rect.y+self.yVel, self.rect.width, self.rect.height)
 		for box in boxes:
 			left = False
@@ -118,9 +126,7 @@ class Bat(Enemy):
 			self.yVel = self.speed * math.cos(angle)*yDirection 
 			self.xVel = self.speed * math.sin(angle)*xDirection#corrects the speed according to directions
 
-	def draw(self, screen):
-		cameraOffset = getOffset()
-		if self.xVel <0:
-			screen.blit(pygame.transform.flip(self.images[self.animationIndex//15],True,False), (self.rect.x-cameraOffset, self.rect.y))
-		else:
-			screen.blit(self.images[self.animationIndex//15], (self.rect.x-cameraOffset, self.rect.y))
+	def animation(self,dt):
+		self.animationIndex = self.animationIndex+0.075*dt
+		if self.animationIndex >= 2*15:
+			self.animationIndex = 0
