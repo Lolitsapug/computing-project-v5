@@ -21,6 +21,7 @@ gameTime = 0 #game timer (miliseconds)
 score = 0
 
 bg = pygame.image.load("menuImages/catlegendsbackground.png")
+font0 = pygame.font.SysFont('freesanbold.ttf', 60)
 font1 = pygame.font.SysFont('freesanbold.ttf', 50)
 font2 = pygame.font.SysFont('freesanbold.ttf', 40)
 
@@ -68,7 +69,7 @@ def LoadNextLevel(player): #loads future levels
 	level += 1 #increments level by 1
 	createMap(levels[level],player)
 
-def gameLoop(dt,surface,screen,clock,player):	
+def gameLoop(dt,surface,screen,clock):	
 		global gameTime,done,score
 
 		pygame.event.pump()
@@ -76,6 +77,8 @@ def gameLoop(dt,surface,screen,clock,player):
 			if events.type == pygame.QUIT:
 				done = True
 				pygame.quit() 
+			if player.dead == True and events.type == pygame.KEYDOWN: #redirect to deathloop
+				return "gameOver"
 	#----------------- GAME LOGIC START--------------------------------
 		gameTime += clock.get_time()
 		#onscreen text statistics
@@ -86,7 +89,6 @@ def gameLoop(dt,surface,screen,clock,player):
 		ammoRect.x,ammoRect.y = 15,45
 		moneyRect.x,moneyRect.y = 15,105
 	
-
 		surface.fill(BACKGROUND)
 		for box in boxes:
 			box.draw(surface) #draws background so it doesnt cover up projectile arc
@@ -96,11 +98,11 @@ def gameLoop(dt,surface,screen,clock,player):
 			print("flag collision?")
 			LoadNextLevel(player) 
 
-		for enemy in enemies: #player collisions with enemy
-			enemy.update(dt,player)
+		for enemy in enemies: #interactions with all enemies
+			enemy.update(dt,player) #updates enemies for movement/calculations
 			if enemy.type == "bat":
 				enemy.boxCollisions(dt,boxes)#collide with the terrain
-			if enemy.checkCollisions(player.rect) == True: 
+			if enemy.checkCollisions(player.rect) == True: #collisions with player
 				if player.damagetime >=1300: 
 					player.damagetime = 0
 					player.health = player.health-1 #player takes damage
@@ -110,11 +112,10 @@ def gameLoop(dt,surface,screen,clock,player):
 						#"click a button to exit"
 						#check for any button press
 						#load death menu, show score & time,"do you want to update leaderboard", redirect to menu page
-						return "menu"
 					if enemy.type == "bat": 
 						enemies.remove(enemy)
 						break #enemies like bats die
-			for attack in player.getAttacks():
+			for attack in player.getAttacks(): #collisions with player attacks
 				if enemy.checkCollisions(attack.rect) == True: #player kills an enemy. adds 100 to score
 					enemies.remove(enemy)
 					score += 100
@@ -128,6 +129,17 @@ def gameLoop(dt,surface,screen,clock,player):
 				update = attack.update(clock,player.rect,player.right, dt) #player slash attack
 			if update == "remove":
 				player.removeAttack(attack)
+
+		if player.dead == True: #gameover screen - redirects to deathLoop()
+			GameOver = font1.render("Game Over",True,(255,255,255))
+			GameOverRect = GameOver.get_rect()
+			GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//3
+			surface.blit(GameOver,GameOverRect)
+
+			inputText = font2.render("Press any button to continue",True,(255,255,255))
+			inputTextRect = inputText.get_rect()
+			inputTextRect.centerx,inputTextRect.top = WIDTH//2,GameOverRect.bottom + 5
+			surface.blit(inputText,inputTextRect)
 
 	#----------------- DRAWING START-----------------------------------
 		for enemy in enemies:
@@ -149,7 +161,7 @@ def gameLoop(dt,surface,screen,clock,player):
 
 	#------------------ END OF GAME LOOP --------------------------------
 
-def shopLoop(screen,player):
+def shopLoop(screen):
 	pygame.event.pump()
 	#shop pages, buttons, coin counter
 
@@ -185,6 +197,7 @@ def menuLoop(surface,screen,buttons):
 		return "game"	
 	elif clicked == "leaderboard":
 		print("loading leaderboard") #load a leaderboard page
+		#return "leaderboard"
 	elif clicked == "exit":
 		print("quitting game")
 		done = True
@@ -199,8 +212,55 @@ def menuLoop(surface,screen,buttons):
 	return "menu"
 	#------------------ END OF MENU LOOP ---------------------
 
-def deathLoop(screen,gameTime):
+def deathLoop(screen,surface,buttons):
+	global done
 	pygame.event.pump()
+	clicked = None
+	for events in pygame.event.get():
+		if events.type == pygame.QUIT:
+			pygame.quit()
+		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
+			pos = pygame.mouse.get_pos()
+			for b in buttons:
+				if buttons[b][1].collidepoint(pos) == True:
+					print(b + " was clicked")
+					clicked = b
+	if clicked == "title": #MAKE THESE LINK TO THEIR FUNCTIONS
+		return "menu"	
+	elif clicked == "leaderboard":
+		print("loading leaderboard") #load a leaderboard page
+		#return "leaderboard"
+
+	textColour = (255,255,255)
+
+	GameOver = font0.render("Game Over!",True,textColour)
+	GameOverRect = GameOver.get_rect()
+	GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//4+50
+
+	scoreText = font2.render(f"Total Score: {score + player.money*10}",True,textColour)
+	scoreRect = scoreText.get_rect()
+	scoreRect.x,scoreRect.centery = WIDTH//3,HEIGHT//3+50
+
+	time = font2.render(f"Time: {gameTime//1000}",True,textColour)
+	timeRect = time.get_rect()
+	timeRect.x,timeRect.centery = WIDTH//3,HEIGHT//3 +100
+
+	levelText = font2.render(f"Level: {level+1}",True,textColour)
+	levelRect = levelText.get_rect()
+	levelRect.x,levelRect.centery = WIDTH//3,HEIGHT//3 +150
+
+	surface.fill(BACKGROUND)
+	for b in buttons:
+		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
+	
+	surface.blit(GameOver,GameOverRect)
+	surface.blit(scoreText,scoreRect)
+	surface.blit(time,timeRect)
+	surface.blit(levelText,levelRect)
+
+	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
+	screen.blit(scaledSurface, (0, 0))
+	return "gameOver"
 	#death screen, your score, time taken, update leaderboard
 
 #-------------------- MAIN LOOP -----------------------
@@ -220,6 +280,12 @@ def main():#initial game initialisation
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]
 	}
 
+	deathbuttons = {
+		#"title":[pygame.image.load("menuImage/TITLEbutton.png")]
+		"title":[pygame.image.load("menuImages/MENUbutton.png"),pygame.Rect(300,450,250,100)],
+		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(WIDTH-250-300,450,250,100)]
+	}
+
 	pygame.mixer.music.load("Grasslands Theme.mp3")
 	pygame.mixer.music.set_volume(0.25)
 	pygame.mixer.music.play(loops=-1)
@@ -227,13 +293,13 @@ def main():#initial game initialisation
 #----------------- MAIN GAME LOOP START----------------------------	
 	while done == False:
 		if loop == "game":
-			loop = gameLoop(dt,surface,screen,clock,player)
+			loop = gameLoop(dt,surface,screen,clock)
 		elif loop == "shop":
-			shopLoop(surface,screen,player)
+			shopLoop(surface,screen)
 		elif loop == "menu":
 			loop = menuLoop(surface,screen,menubuttons)
 		elif loop == "gameOver":
-			deathLoop(surface,screen,gameTime)
+			loop = deathLoop(screen,surface,deathbuttons)
 
 		pygame.display.flip()
 
