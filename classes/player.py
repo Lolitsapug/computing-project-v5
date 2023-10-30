@@ -58,10 +58,11 @@ class Player(Sprite):
 		#moves player with delta time compenstating for lag
 	
 	def draw(self, screen):
-		global cameraOffset
-		x = self.rect.x - cameraOffset
-		y = self.rect.y
+		if self.toggleArc == 1:  #draws projectile prediction arc
+			self.projectileArc(screen, False)
 
+		x = self.rect.x - cameraOffset #retrieves position of player in screen
+		y = self.rect.y
 		if round(self.animationIndex/15)==27: #corrections for some animation frames
 			y = y-12
 		elif round(self.animationIndex/15)==29:
@@ -140,7 +141,6 @@ class Player(Sprite):
 			if collided == False:
 				self.grounded = False
 
-
 			self.move(dt)
 			return end
 
@@ -185,9 +185,6 @@ class Player(Sprite):
 						slash = self.slash(0) #moving attack
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 3:
 						slash = self.slash(1) #static attack
-
-			if self.toggleArc == 1: #shows projectile prediction arc
-				self.projectileArc(screen,False)		
 
 			if self.grounded == False: #gravity	
 				if self.yVel < self.yMaxSpeed:
