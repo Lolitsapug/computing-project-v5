@@ -67,7 +67,10 @@ def LoadNextLevel(player): #loads future levels
 	player.attacks = []
 	player.xVel,player.yVel,player.grounded = 0.00001,0,True #resets player values, v != 0 to reset cameraoffset
 	level += 1 #increments level by 1
+	if level >= len(levels):
+		return True
 	createMap(levels[level],player)
+	return False
 
 def gameLoop(dt,surface,screen,clock):	
 		global gameTime,done,score
@@ -96,7 +99,8 @@ def gameLoop(dt,surface,screen,clock):
 		player.update(dt,clock,surface)
 		if player.collisions(boxes,dt):#if collision with end flag loads next level
 			print("flag collision?")
-			LoadNextLevel(player) 
+			if LoadNextLevel(player):
+				return "gameOver" #player has reached end of levels
 
 		for enemy in enemies: #interactions with all enemies
 			enemy.update(dt,player) #updates enemies for movement/calculations
