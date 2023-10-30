@@ -3,8 +3,6 @@ from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
 from classes.enemies import Slime, Bat
 
-print("test for pycharm git")
-
 pygame.init()
 pygame.mixer.init()
 pygame.font.init()
