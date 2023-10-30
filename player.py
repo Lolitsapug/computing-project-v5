@@ -296,9 +296,6 @@ class Player(Sprite):
 				if self.ammo > 0: #player must have ammo to spawn a projectile
 					self.attacks.append(Projectile(self.rect.centerx, self.rect.centery, projXVel, projYVel))
 					self.ammo = self.ammo-1
-					print(f"{self.ammo} ammo left")
-				else:
-					print("no ammo left")
 
 class Slash(Sprite):
 	def __init__(self, image, startx , starty):

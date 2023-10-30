@@ -3,6 +3,8 @@ from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
 from classes.enemies import Slime, Bat
 
+print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
+
 pygame.init()
 pygame.mixer.init()
 pygame.font.init()
