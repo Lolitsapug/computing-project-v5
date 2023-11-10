@@ -85,7 +85,8 @@ def gameLoop(dt,surface,screen,clock):
 			if player.dead == True and events.type == pygame.KEYDOWN: #redirect to deathloop
 				return "gameOver"
 	#----------------- GAME LOGIC START--------------------------------
-		gameTime += clock.get_time()
+		if player.dead == False:
+			gameTime += clock.get_time()
 		#onscreen text statistics
 		timeText,scoreText,ammoText,moneyText = font1.render(str(gameTime//1000),True,(0,255,0)),font2.render(str(f"score:{score}"),True,(255,255,0)),font2.render(f"ammo:{player.ammo}",True,(255,255,0)),font2.render(f"coins:{player.money}",True,(255,255,0))
 		timeRect,scoreRect,ammoRect,moneyRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect(),moneyText.get_rect()
@@ -172,7 +173,7 @@ def shopLoop(screen):
 	#shop pages, buttons, coin counter
 
 def menuLoop(surface,screen,buttons):
-	global done,level,levels,player
+	global done,level,levels,player,gameTime
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -191,6 +192,7 @@ def menuLoop(surface,screen,buttons):
 		levels = ["Level1.txt","Level2.txt","Level3.txt"]
 		level = 0
 		player = Player(100,100)
+		gameTime = 0
 		createMap(levels[level],player)
 		return "game"
 	elif clicked == "loadTxt":
@@ -198,7 +200,8 @@ def menuLoop(surface,screen,buttons):
 		#txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
 		#levels = ["customMap.txt","BossLevel.txt"]
 		level = 0
-		player = Player(100, 100) 
+		player = Player(100, 100)
+		gameTime = 0
 		createMap(levels[level],player)
 		return "game"	
 	elif clicked == "leaderboard":
