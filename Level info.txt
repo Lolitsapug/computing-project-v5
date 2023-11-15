@@ -1,2 +1,27 @@
-Leave 7 columns to the left and 13 columns to the right
-For 'infinite' background effect
+
+===< Level Info & Formatting >===
+
+- write the level into "custom.txt"
+
+Objects:
+= , Top Grass
+- , Dirt
+. , Sky background
+X , invisible wall
+# , end flag
+
+Player:
+@ , player start position
+
+Enemies:
+o , slime
+> , bat
++ , shooter
+^ , spike
+
+-------------------------------------------------------------------------------------------------------
+
+Extra info:
+
+7 visible tiles from left and right side of each level
+- Leave 7 grass tiles aside each invisible side wall for "infinite" land effect.

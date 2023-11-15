@@ -47,26 +47,24 @@ def createMap(fileName,player):
 				boxes.append(Box(column*75, row*75,1))
 			elif map[row][column] == ".":#sky
 				boxes.append(Sky(column*75, row*75))
-			elif map[row][column] == "^":#slime
-				boxes.append(Sky(column*75, row*75))
-				enemies.append(Slime((column*75)+16, (row*75)+29)) #+29 for height correction
-			elif map[row][column] == ">":#bat
-				boxes.append(Sky(column*75, row*75))
-				enemies.append(Bat((column*75+5), (row*75)+5)) 
-			elif map[row][column] == "+":#shooter
-				boxes.append(Sky(column*75, row*75))
-				enemies.append(Shooter((column*75+5), (row*75)+29)) 
-			elif map[row][column] == "v":#spike
-				boxes.append(Sky(column*75, row*75))
-				enemies.append(Spike((column*75+5), (row*75)+26)) 
-			elif map[row][column] == "#":#END
-				boxes.append(Sky(column*75, row*75))
-				boxes.append(EndPoint(column*75, 380))#flag goes from base to top
-			elif map[row][column] == "@":#player
-				boxes.append(Sky(column*75, row*75))
-				player.rect.x,player.rect.y = column*75,row*75+20
 			elif map[row][column] == "X":#invisible wall
 				boxes.append(Invisible(column*75, row*75))
+			else:
+				boxes.append(Sky(column*75, row*75)) #background sky for all sprites
+
+			if map[row][column] == "o":#slime
+				enemies.append(Slime((column*75)+16, (row*75)+29)) #+29 for height correction
+			elif map[row][column] == ">":#bat
+				enemies.append(Bat((column*75+5), (row*75)+5)) 
+			elif map[row][column] == "+":#shooter
+				enemies.append(Shooter((column*75+5), (row*75)+29)) 
+			elif map[row][column] == "^":#spike
+				enemies.append(Spike((column*75+5), (row*75)+26)) 
+			elif map[row][column] == "#":#END
+				boxes.append(EndPoint(column*75, 380))#flag goes from base to top
+			elif map[row][column] == "@":#player
+				player.rect.x,player.rect.y = column*75,row*75+20
+
 
 def LoadNextLevel(player): #loads future levels
 	global level
