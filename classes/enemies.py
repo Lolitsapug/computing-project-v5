@@ -18,7 +18,7 @@ class Enemy(Sprite):
 		
 class Slime(Enemy):
 	def __init__(self, startx , starty):
-		super().__init__(["slime-idle-1.png"], startx, starty,"slime")
+		super().__init__(["sprites/slime-idle-1.png"], startx, starty,"slime")
 		self.xOffset = 0
 		self.speed = -0.1
 		self.distance = 150
@@ -130,3 +130,75 @@ class Bat(Enemy):
 		self.animationIndex = self.animationIndex+0.075*dt
 		if self.animationIndex >= 2*15:
 			self.animationIndex = 0
+
+class Shooter(Enemy):
+	def __init__(self, startx , starty):
+		super().__init__(["animations/bat/bat(1).png"], startx, starty,"shooter")
+		self.range = 1000
+		self.cooldown = 0
+		self.projectiles = []
+		self.direction = "Right"
+		
+
+	def update(self,dt,player):
+		self.cooldown += dt
+		distance = math.hypot(player.rect.centerx-self.rect.centerx, self.rect.centery-player.rect.centery)
+		if player.rect.x < self.rect.x:
+			self.direction = "Left"
+		elif player.rect.x > self.rect.x:
+			self.direction = "Right"
+		if distance <= self.range and self.cooldown >= 1500:
+			self.cooldown = 0
+			self.shoot()
+
+	def shoot(self):
+		if self.direction == "Right":
+			self.projectiles.append(enemyProjectile(self.rect.centerx, self.rect.centery, 0.15))
+		else:
+			self.projectiles.append(enemyProjectile(self.rect.centerx, self.rect.centery, -0.15))
+	
+	def draw(self,screen):
+		cameraOffset = getOffset()
+		if self.direction == "Left":
+			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex//15)],True,False), (self.rect.x-cameraOffset, self.rect.y))
+		else:
+			screen.blit(self.images[round(self.animationIndex//15)], (self.rect.x-cameraOffset, self.rect.y))
+		
+		for proj in self.projectiles:
+			proj.draw(screen)
+
+	def updateProjectiles(self,dt,boxes,player):
+		for proj in self.projectiles:
+			proj.update(dt,player)
+			collision = proj.checkcollisions(boxes,player)
+			if collision == "remove":
+				self.projectiles.remove(proj)
+			elif collision == "playerCollision":
+				self.projectiles.remove(proj)
+				return "playerCollision"
+
+class enemyProjectile(Enemy):
+	def __init__(self, startx , starty, speed):
+		super().__init__(["sprites/slime-idle-1.png"], startx, starty,"shooterProjectile")
+		self.xVel = speed
+		self.distance = 0
+		
+	def update(self,dt,player):
+		self.rect.x += self.xVel*dt
+		self.distance += self.xVel*dt
+
+	def checkcollisions(self,boxes,player): #checks collisions with ground or walls
+		for box in boxes:
+			if box.type == "ground":
+				if self.rect.colliderect(box.rect) or self.distance >= 1000:
+					return "remove"
+		if self.rect.colliderect(player.rect):
+			return "playerCollision"
+
+class Spike(Enemy):
+		def __init__(self, startx , starty):
+			super().__init__(["sprites/spike.png"], startx, starty,"spike")
+			self.xVel = 0
+		
+
+

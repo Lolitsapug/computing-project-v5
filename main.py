@@ -1,7 +1,7 @@
 import pygame #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
-from classes.enemies import Slime, Bat
+from classes.enemies import Slime, Bat, Shooter,Spike
 
 print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
 
@@ -53,6 +53,12 @@ def createMap(fileName,player):
 			elif map[row][column] == ">":#bat
 				boxes.append(Sky(column*75, row*75))
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
+			elif map[row][column] == "+":#shooter
+				boxes.append(Sky(column*75, row*75))
+				enemies.append(Shooter((column*75+5), (row*75)+29)) 
+			elif map[row][column] == "v":#spike
+				boxes.append(Sky(column*75, row*75))
+				enemies.append(Spike((column*75+5), (row*75)+26)) 
 			elif map[row][column] == "#":#END
 				boxes.append(Sky(column*75, row*75))
 				boxes.append(EndPoint(column*75, 380))#flag goes from base to top
@@ -108,21 +114,18 @@ def gameLoop(dt,surface,screen,clock):
 			enemy.update(dt,player) #updates enemies for movement/calculations
 			if enemy.type == "bat":
 				enemy.boxCollisions(dt,boxes)#collide with the terrain
+			if enemy.type == "shooter":
+				if enemy.updateProjectiles(dt,boxes,player) == "playerCollision":
+					if player.damagetime >=1300:
+						player.takeDamage()
 			if enemy.checkCollisions(player.rect) == True: #collisions with player
 				if player.damagetime >=1300: 
-					player.damagetime = 0
-					player.health = player.health-1 #player takes damage
-					print(f"player health:{player.health}")
-					if player.health == 0: # player dies at 0 health
-						player.dead = True
-						#"click a button to exit"
-						#check for any button press
-						#load death menu, show score & time,"do you want to update leaderboard", redirect to menu page
-					if enemy.type == "bat": 
+					player.takeDamage()
+					if enemy.type != "slime" and enemy.type != "spike": 
 						enemies.remove(enemy)
 						break #enemies like bats die
 			for attack in player.getAttacks(): #collisions with player attacks
-				if enemy.checkCollisions(attack.rect) == True: #player kills an enemy. adds 100 to score
+				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike": #player kills an enemy. adds 100 to score
 					enemies.remove(enemy)
 					score += 100
 					if attack.type == "projectile":
@@ -195,6 +198,7 @@ def menuLoop(surface,screen,buttons):
 		return "game"
 	elif clicked == "loadTxt":
 		print("loading custom map")
+		levels = ["custom.txt"]
 		#txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
 		#levels = ["customMap.txt","BossLevel.txt"]
 		level = 0

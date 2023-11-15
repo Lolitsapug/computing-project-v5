@@ -53,6 +53,13 @@ class Player(Sprite):
 	def removeAttack(self,attack):
 		self.attacks.remove(attack) #removes attack
 	
+	def takeDamage(self):
+		self.damagetime = 0
+		self.health = self.health-1 #player takes damage
+		print(f"player health:{self.health}")
+		if self.health == 0: # player dies at 0 health
+			self.dead = True
+
 	def move(self,dt):
 		self.rect.move_ip([self.xVel*dt,self.yVel*dt]) 
 		#moves player with delta time compenstating for lag
@@ -261,11 +268,11 @@ class Player(Sprite):
 			if self.right == True:
 				if static == 0:
 					self.xVel = 0.40
-				self.attacks.append(Slash("slash.png", self.rect.right+25, self.rect.centery))
+				self.attacks.append(Slash("sprites/slash.png", self.rect.right+25, self.rect.centery))
 			if self.right == False:
 				if static == 0:
 					self.xVel = -0.40
-				self.attacks.append(Slash("slash(2).png", self.rect.left-25, self.rect.centery))
+				self.attacks.append(Slash("sprites/slash(2).png", self.rect.left-25, self.rect.centery))
 			return True
 		return False
 			
@@ -323,7 +330,7 @@ class Slash(Sprite):
 			
 class Projectile(Sprite):
 	def __init__(self,startx,starty,xVel,yVel):
-		super().__init__(["rock.png"],startx,starty,"projectile")	
+		super().__init__(["sprites/rock.png"],startx,starty,"projectile")	
 		self.gravity = 0.0007
 		self.xVel = xVel
 		self.yVel = yVel
