@@ -19,7 +19,7 @@ death = ["animations/death/death(1).png","animations/death/death(2).png","animat
 attack = ["animations/attack/attack(1).png","animations/attack/attack(2).png","animations/attack/attack(3).png","animations/attack/attack(4).png","animations/attack/attack(4).png"]
 
 gravity = 0.001	
-friction = 0.97
+friction = 0.0018
 jumpForce = -0.49
 speed = 0.0008
 
@@ -158,7 +158,8 @@ class Player(Sprite):
 		if self.dead == False:
 			self.past += clock.get_time() #attack movement delay
 			self.damagetime += clock.get_time() #iframe timer
-			self.xVel *= friction #smoothly decreases x velocity (friction)
+			print(dt)
+			self.xVel *= 1-friction*dt #smoothly decreases x velocity (friction)
 
 			key = pygame.key.get_pressed()#keyboard inputs
 			if self.past >= 650: #attack movement delay
