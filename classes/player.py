@@ -158,7 +158,6 @@ class Player(Sprite):
 		if self.dead == False:
 			self.past += clock.get_time() #attack movement delay
 			self.damagetime += clock.get_time() #iframe timer
-			print(dt)
 			self.xVel *= 1-friction*dt #smoothly decreases x velocity (friction)
 
 			key = pygame.key.get_pressed()#keyboard inputs
