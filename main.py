@@ -19,10 +19,13 @@ boxes = []
 enemies = []
 level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
+animationIndex = 0
 gameTime = 0 #game timer (miliseconds)
 score = 0
 
-bg = pygame.image.load("menuImages/catlegendsbackground.png")
+title = pygame.image.load("menuImages/catlegendstitle.png")
+loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png","menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
+images = [pygame.image.load(image) for image in loadimages]
 font0 = pygame.font.SysFont('freesanbold.ttf', 60)
 font1 = pygame.font.SysFont('freesanbold.ttf', 50)
 font2 = pygame.font.SysFont('freesanbold.ttf', 40)
@@ -64,7 +67,6 @@ def createMap(fileName,player):
 				boxes.append(EndPoint(column*75, 380))#flag goes from base to top
 			elif map[row][column] == "@":#player
 				player.rect.x,player.rect.y = column*75,row*75+20
-
 
 def LoadNextLevel(player): #loads future levels
 	global level
@@ -173,8 +175,8 @@ def shopLoop(screen):
 	pygame.event.pump()
 	#shop pages, buttons, coin counter
 
-def menuLoop(surface,screen,buttons):
-	global done,level,levels,player,gameTime
+def menuLoop(dt,surface,screen,buttons):
+	global done,level,levels,player,gameTime,animationIndex
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -189,7 +191,7 @@ def menuLoop(surface,screen,buttons):
 					print(b + " was clicked")
 					clicked = b
 
-	if clicked == "start": #MAKE THESE LINK TO THEIR FUNCTIONS
+	if clicked == "start": #BUTTON FUNCTIONS
 		levels = ["Level1.txt","Level2.txt","Level3.txt"]
 		level = 0
 		player = Player(100,100)
@@ -212,9 +214,14 @@ def menuLoop(surface,screen,buttons):
 	elif clicked == "exit":
 		print("quitting game")
 		done = True
-		pygame.quit()		
+		pygame.quit()
+
+	animationIndex = animationIndex+0.15*dt
+	if animationIndex >= 6*15:
+		animationIndex = 0		
 	#------------------ DRAWING SURFACE ---------------------
-	surface.blit(bg,(0,0))
+	surface.blit(images[round(animationIndex//15)],(0,0))
+	surface.blit(title,(0,0))
 	for b in buttons:
 		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
 	
@@ -308,7 +315,7 @@ def main():#initial game initialisation
 		elif loop == "shop":
 			shopLoop(surface,screen)
 		elif loop == "menu":
-			loop = menuLoop(surface,screen,menubuttons)
+			loop = menuLoop(dt,surface,screen,menubuttons)
 		elif loop == "gameOver":
 			loop = deathLoop(screen,surface,deathbuttons)
 
