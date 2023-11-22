@@ -213,7 +213,7 @@ class Player(Sprite):
 
 	def animation(self,dt,jump,slash):
 		if self.playing: #main animation loop
-			self.animationIndex = self.animationIndex+0.075*dt #increments the animation
+			self.animationIndex = self.animationIndex+0.1*dt #increments the animation
 			if self.animationIndex >= (self.range[1]+1)*15:
 				if self.loop == True : #if animation loops then it resets back to start
 					self.animationIndex = self.range[0]*15
