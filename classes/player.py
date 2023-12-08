@@ -219,6 +219,7 @@ class Player(Sprite):
 					self.animationIndex = self.range[0]*15
 				else: #if animation doesnt loop, waits for next animation to be triggered
 					self.playing = False
+					self.animationIndex = self.range[1]*15
 
 		if slash == False and self.past >= 650 and self.dead == False:
 			if self.grounded == True and abs(self.xVel)<0.05 and self.currentAnim != "idle": #trigger for idle animation
@@ -227,14 +228,14 @@ class Player(Sprite):
 				self.animationIndex == idlerange[0]
 				self.loop = True
 				self.playing = True	
-			if self.grounded == True and abs(self.xVel)>=0.05 and self.currentAnim != "run": #trigger for run animation
+			elif self.grounded == True and abs(self.xVel)>=0.05 and self.currentAnim != "run": #trigger for run animation
 				self.currentAnim = "run"
 				self.range = runrange
 				self.animationIndex = self.range[0]*15
 				self.loop = True
 				self.playing = True	
 			
-			if self.grounded == False and self.currentAnim!= "jump" or jump == True: #trigger for jump animation
+			elif self.grounded == False and self.currentAnim!= "jump" or jump == True: #trigger for jump animation
 				self.currentAnim = "jump"
 				self.range = jumprange
 				self.animationIndex = self.range[0]*15

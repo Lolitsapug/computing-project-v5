@@ -56,11 +56,11 @@ def createMap(fileName,player):
 				boxes.append(Sky(column*75, row*75)) #background sky for all sprites
 
 			if map[row][column] == "o":#slime
-				enemies.append(Slime((column*75)+16, (row*75)+29)) #+29 for height correction
+				enemies.append(Slime((column*75)+16, (row*75)+19)) #+29 for height correction
 			elif map[row][column] == ">":#bat
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
 			elif map[row][column] == "+":#shooter
-				enemies.append(Shooter((column*75+5), (row*75)+29)) 
+				enemies.append(Shooter((column*75+5), (row*75)+19)) 
 			elif map[row][column] == "^":#spike
 				enemies.append(Spike((column*75+5), (row*75)+26)) 
 			elif map[row][column] == "#":#END
