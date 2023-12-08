@@ -1,7 +1,7 @@
 import pygame
 cameraOffset = 0
 
-class Sprite(pygame.sprite.Sprite):
+class Sprite(pygame.sprite.Sprite): #abstract class - shouldn't ever be implemented
 	def __init__(self, images, startx, starty,type):
 		super().__init__()
 		self.images = [pygame.image.load(image) for image in images]

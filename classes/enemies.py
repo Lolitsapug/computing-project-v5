@@ -15,6 +15,11 @@ class Enemy(Sprite):
 			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex//15)],True,False), (self.rect.x-cameraOffset, self.rect.y))
 		else:
 			screen.blit(self.images[round(self.animationIndex//15)], (self.rect.x-cameraOffset, self.rect.y))
+
+	def animation(self,dt):
+		self.animationIndex = self.animationIndex+0.075*dt
+		if self.animationIndex >= len(self.images)*15:
+			self.animationIndex = 0
 		
 class Slime(Enemy):
 	def __init__(self, startx , starty):
@@ -32,6 +37,7 @@ class Slime(Enemy):
 			elif self.speed == 0.1:
 				self.rect.centerx = self.startx-self.distance
 
+		self.animation(dt)
 		self.move(dt)
 
 	def move(self,dt):
@@ -126,10 +132,6 @@ class Bat(Enemy):
 			self.yVel = self.speed * math.cos(angle)*yDirection 
 			self.xVel = self.speed * math.sin(angle)*xDirection#corrects the speed according to directions
 
-	def animation(self,dt):
-		self.animationIndex = self.animationIndex+0.075*dt
-		if self.animationIndex >= 2*15:
-			self.animationIndex = 0
 
 class Shooter(Enemy):
 	def __init__(self, startx , starty):
