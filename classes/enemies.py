@@ -23,7 +23,7 @@ class Enemy(Sprite):
 		
 class Slime(Enemy):
 	def __init__(self, startx , starty):
-		super().__init__(["sprites/slime-idle-1.png"], startx, starty,"slime")
+		super().__init__(["animations/axeRun/run(1).png)","animations/axeRun/run(2).png)","animations/axeRun/run(3).png)","animations/axeRun/run(4).png)","animations/axeRun/run(5).png)","animations/axeRun/run(6).png)","animations/axeRun/run(7).png)","animations/axeRun/run(8).png)"], startx, starty,"slime")
 		self.xOffset = 0
 		self.speed = -0.1
 		self.distance = 150
