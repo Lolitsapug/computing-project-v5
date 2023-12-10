@@ -21,16 +21,16 @@ class Enemy(Sprite):
 		if self.animationIndex >= len(self.images)*15:
 			self.animationIndex = 0
 		
-class Slime(Enemy):
+class Sword(Enemy):
 	def __init__(self, startx , starty):
-		super().__init__(["animations/axe/run1.png","animations/axe/run2.png","animations/axe/run3.png","animations/axe/run4.png","animations/axe/run5.png"], startx, starty,"slime")
+		super().__init__(["animations/sword/run1.png","animations/sword/run2.png","animations/sword/run3.png","animations/sword/run4.png","animations/sword/run5.png"], startx, starty,"sword")
 		self.xOffset = 0
 		self.speed = -0.1
 		self.distance = 150
 		self.startx = startx
 	
-	def update(self,dt,player): #make slime detect player distance from center point and then chase player within range??? WIP!!!
-		if abs(self.startx - self.rect.centerx) >= self.distance: #slime only moves left and right
+	def update(self,dt,player): #make enemy detect player distance from center point and then chase player within range??? WIP!!!
+		if abs(self.startx - self.rect.centerx) >= self.distance: #enemy only moves left and right
 			self.speed = -self.speed
 			if self.speed == -0.1:
 				self.rect.centerx = self.startx+self.distance
@@ -41,7 +41,7 @@ class Slime(Enemy):
 		self.move(dt)
 
 	def move(self,dt):
-		self.rect.move_ip([self.speed*dt,0]) #slime has no y velocity
+		self.rect.move_ip([self.speed*dt,0]) #enemy has no y velocity
 	
 	def draw(self, screen):
 		cameraOffset = getOffset()
@@ -157,7 +157,7 @@ class Shooter(Enemy):
 			self.direction = "Left"
 		elif player.rect.x > self.rect.x:
 			self.direction = "Right"
-		if distance <= self.range and self.cooldown >= 1500:
+		if distance <= self.range and self.cooldown >= 2000:
 			self.cooldown = 0
 			self.fire = True
 
