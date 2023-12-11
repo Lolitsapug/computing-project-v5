@@ -1,4 +1,4 @@
-import pygame #imports
+import pygame, sqlite3 #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
 from classes.enemies import Slime, Bat, Shooter,Spike
@@ -29,6 +29,34 @@ images = [pygame.image.load(image) for image in loadimages]
 font0 = pygame.font.SysFont('freesanbold.ttf', 60)
 font1 = pygame.font.SysFont('freesanbold.ttf', 50)
 font2 = pygame.font.SysFont('freesanbold.ttf', 40)
+
+
+def readData():
+	connection = sqlite3.connect('Database.db')
+	rows = []
+	# preparing a cursor object
+	cursor = connection.cursor()
+	sql = '''
+	        SELECT Score, Time, Level, Name 
+	        FROM Leaderboard, User
+	        WHERE Leaderboard.userID = User.UserID 
+	        ORDER BY Score DESC, Time DESC 
+	        LIMIT 10;
+	        '''
+	# executing sql statement with try and except incase of errors
+	try:
+		cursor.execute(sql)
+		connection.commit()
+		rows = cursor.fetchall()
+
+	except Exception as e:
+		print("Error Message :", str(e))
+		connection.rollback()
+		return "error"
+
+	return rows
+
+
 
 def createMap(fileName,player):
 	global boxes,enemies
@@ -169,11 +197,8 @@ def gameLoop(dt,surface,screen,clock):
 		screen.blit(scaledSurface, (0, 0))
 		return "game"
 
-	#------------------ END OF GAME LOOP --------------------------------
-
 def shopLoop(screen):
 	pygame.event.pump()
-	#shop pages, buttons, coin counter
 
 def menuLoop(dt,surface,screen,buttons):
 	global done,level,levels,player,gameTime,animationIndex
@@ -210,7 +235,7 @@ def menuLoop(dt,surface,screen,buttons):
 		return "game"	
 	elif clicked == "leaderboard":
 		print("loading leaderboard") #load a leaderboard page
-		#return "leaderboard"
+		return "leaderboard"
 	elif clicked == "exit":
 		print("quitting game")
 		done = True
@@ -228,7 +253,6 @@ def menuLoop(dt,surface,screen,buttons):
 	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 	screen.blit(scaledSurface, (0, 0))
 	return "menu"
-	#------------------ END OF MENU LOOP ---------------------
 
 def deathLoop(screen,surface,buttons):
 	global done
@@ -247,7 +271,7 @@ def deathLoop(screen,surface,buttons):
 		return "menu"	
 	elif clicked == "leaderboard":
 		print("loading leaderboard") #load a leaderboard page
-		#return "leaderboard"
+		return "leaderboard"
 
 	textColour = (255,255,255)
 
@@ -279,7 +303,41 @@ def deathLoop(screen,surface,buttons):
 	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
 	screen.blit(scaledSurface, (0, 0))
 	return "gameOver"
-	#death screen, your score, time taken, update leaderboard
+
+def leaderboardLoop(screen,surface):
+	global done
+	pygame.event.pump()
+
+	for events in pygame.event.get():
+		if events.type == pygame.QUIT:
+			pygame.quit()
+		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
+			pos = pygame.mouse.get_pos()
+			if pygame.Rect(150,500,250,100).collidepoint(pos):
+				print("title " + " was clicked")
+
+				return "menu"
+
+	topText = font0.render("Leaderboard", True, (255,255,255))
+	topTextRect = topText.get_rect()
+	topTextRect.centerx, topTextRect.centery = WIDTH // 2, 100
+
+	rows = readData()
+	surface.fill(BACKGROUND)
+	surface.blit(topText, topTextRect)
+
+	for i in range(len(rows)):
+		text = font2.render(f"{i+1}. {rows[i][3]} | Score: {rows[i][0]} | Time: {rows[i][1]} | Level:{rows[i][2]}", True, (255,255,255))
+		rect = text.get_rect()
+		rect.x,rect.y = WIDTH/2 - 300,150 + i*40
+		surface.blit(text, rect)
+
+	surface.blit(pygame.image.load("menuImages/MENUbutton.png"), pygame.Rect(150,500,250,100))
+
+	scaledSurface = pygame.transform.scale(surface, (1280, 720))  # screen scaling
+	screen.blit(scaledSurface, (0, 0))
+	return "leaderboard"
+
 
 #-------------------- MAIN LOOP -----------------------
 def main():#initial game initialisation
@@ -299,7 +357,6 @@ def main():#initial game initialisation
 	}
 
 	deathbuttons = {
-		#"title":[pygame.image.load("menuImage/TITLEbutton.png")]
 		"title":[pygame.image.load("menuImages/MENUbutton.png"),pygame.Rect(300,450,250,100)],
 		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(WIDTH-250-300,450,250,100)]
 	}
@@ -318,6 +375,8 @@ def main():#initial game initialisation
 			loop = menuLoop(dt,surface,screen,menubuttons)
 		elif loop == "gameOver":
 			loop = deathLoop(screen,surface,deathbuttons)
+		elif loop == "leaderboard":
+			loop = leaderboardLoop(screen,surface)
 
 		pygame.display.flip()
 
