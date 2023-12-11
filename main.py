@@ -22,6 +22,9 @@ levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 animationIndex = 0
 gameTime = 0 #game timer (miliseconds)
 score = 0
+name = input("TEMPORARY enter usernname: ")
+userID = 0
+
 
 title = pygame.image.load("menuImages/catlegendstitle.png")
 loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png","menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
@@ -30,6 +33,33 @@ font0 = pygame.font.SysFont('freesanbold.ttf', 60)
 font1 = pygame.font.SysFont('freesanbold.ttf', 50)
 font2 = pygame.font.SysFont('freesanbold.ttf', 40)
 
+def createUser():
+	global userID
+	connection = sqlite3.connect('Database.db')
+	cursor = connection.cursor()
+	rec = (name,)
+	sql = '''
+        INSERT INTO User (Name) VALUES (?)
+        '''
+	try:
+		cursor.execute(sql, rec)
+		connection.commit()
+	except Exception as e:
+		print("Error Message :", str(e))
+		connection.rollback()
+
+	sql = '''
+	        SELECT UserID FROM User ORDER BY UserID DESC LIMIT 1;
+	        '''
+	try:
+		cursor.execute(sql)
+		connection.commit()
+		rows = cursor.fetchall()
+		userID = rows[0][0]
+
+	except Exception as e:
+		print("Error Message :", str(e))
+		connection.rollback()
 
 def readData():
 	connection = sqlite3.connect('Database.db')
@@ -56,7 +86,19 @@ def readData():
 
 	return rows
 
-
+def insertData():
+	connection = sqlite3.connect('Database.db')
+	cursor = connection.cursor()
+	rec = (userID, gameTime//1000, score, level+1)
+	sql = '''
+        INSERT INTO Leaderboard (userID, Time, Score, Level) VALUES (?, ?, ?, ?)
+        '''
+	try:
+		cursor.execute(sql, rec)
+		connection.commit()
+	except Exception as e:
+		print("Error Message :", str(e))
+		connection.rollback()
 
 def createMap(fileName,player):
 	global boxes,enemies
@@ -156,7 +198,7 @@ def gameLoop(dt,surface,screen,clock):
 			for attack in player.getAttacks(): #collisions with player attacks
 				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike": #player kills an enemy. adds 100 to score
 					enemies.remove(enemy)
-					score += 100
+					score += 10
 					if attack.type == "projectile":
 						player.removeAttack(attack)
 
@@ -261,16 +303,18 @@ def deathLoop(screen,surface,buttons):
 	for events in pygame.event.get():
 		if events.type == pygame.QUIT:
 			pygame.quit()
+			done = True
 		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
 			pos = pygame.mouse.get_pos()
 			for b in buttons:
 				if buttons[b][1].collidepoint(pos) == True:
 					print(b + " was clicked")
 					clicked = b
-	if clicked == "title": #MAKE THESE LINK TO THEIR FUNCTIONS
+	if clicked == "title":
+		insertData() #adds data to leaderboard
 		return "menu"	
 	elif clicked == "leaderboard":
-		print("loading leaderboard") #load a leaderboard page
+		insertData()
 		return "leaderboard"
 
 	textColour = (255,255,255)
@@ -311,6 +355,7 @@ def leaderboardLoop(screen,surface):
 	for events in pygame.event.get():
 		if events.type == pygame.QUIT:
 			pygame.quit()
+			done = True
 		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
 			pos = pygame.mouse.get_pos()
 			if pygame.Rect(150,500,250,100).collidepoint(pos):
@@ -323,6 +368,9 @@ def leaderboardLoop(screen,surface):
 	topTextRect.centerx, topTextRect.centery = WIDTH // 2, 100
 
 	rows = readData()
+	if rows == "error":
+		print("error fetching leaderboard data - returning to menu")
+		return "menu"
 	surface.fill(BACKGROUND)
 	surface.blit(topText, topTextRect)
 
@@ -338,7 +386,6 @@ def leaderboardLoop(screen,surface):
 	screen.blit(scaledSurface, (0, 0))
 	return "leaderboard"
 
-
 #-------------------- MAIN LOOP -----------------------
 def main():#initial game initialisation
 	global player
@@ -348,6 +395,7 @@ def main():#initial game initialisation
 	clock = pygame.time.Clock()
 	dt = 0
 	player = Player(100, 100) 
+	createUser()
 	loop = "menu" #switches between menus and game
 	menubuttons = { 
 		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,250,250,100)],
