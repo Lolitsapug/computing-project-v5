@@ -1,7 +1,7 @@
 import pygame, sqlite3 #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
-from classes.enemies import Slime, Bat, Shooter,Spike
+from classes.enemies import Sword, Bat, Shooter,Spike
 
 print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
 
@@ -83,12 +83,12 @@ def createMap(fileName,player):
 			else:
 				boxes.append(Sky(column*75, row*75)) #background sky for all sprites
 
-			if map[row][column] == "o":#slime
-				enemies.append(Slime((column*75)+16, (row*75)+29)) #+29 for height correction
+			if map[row][column] == "o":#sword skeleton
+				enemies.append(Sword((column*75)+16, (row*75)+18)) #+29 for height correction
 			elif map[row][column] == ">":#bat
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
 			elif map[row][column] == "+":#shooter
-				enemies.append(Shooter((column*75+5), (row*75)+29)) 
+				enemies.append(Shooter((column*75+5), (row*75)+18)) 
 			elif map[row][column] == "^":#spike
 				enemies.append(Spike((column*75+5), (row*75)+26)) 
 			elif map[row][column] == "#":#END
@@ -150,7 +150,7 @@ def gameLoop(dt,surface,screen,clock):
 			if enemy.checkCollisions(player.rect) == True: #collisions with player
 				if player.damagetime >=1300: 
 					player.takeDamage()
-					if enemy.type != "slime" and enemy.type != "spike": 
+					if enemy.type != "sword" and enemy.type != "spike": 
 						enemies.remove(enemy)
 						break #enemies like bats die
 			for attack in player.getAttacks(): #collisions with player attacks
