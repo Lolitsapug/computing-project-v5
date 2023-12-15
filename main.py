@@ -128,7 +128,7 @@ def createMap(fileName,player):
 			else:
 				boxes.append(Sky(column*75, row*75)) #background sky for all sprites
 
-			if map[row][column] == "o":#sword skeleton
+			if map[row][column] == "/":#sword skeleton
 				enemies.append(Sword((column*75)+16, (row*75)+18)) #+29 for height correction
 			elif map[row][column] == ">":#bat
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
