@@ -2,6 +2,7 @@ import pygame, sqlite3 #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible
 from classes.enemies import Sword, Bat, Shooter,Spike
+from classes.coin import Coin
 
 print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
 
@@ -17,6 +18,7 @@ done = False
 player = None
 boxes = []
 enemies = []
+coins = []
 level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 animationIndex = 0
@@ -101,9 +103,10 @@ def insertData():
 		connection.rollback()
 
 def createMap(fileName,player):
-	global boxes,enemies
+	global boxes,enemies,coins
 	boxes = [] #resets boxes and enemies lists
 	enemies = []
+	coins = []
 	print("creating map.....")
 	file = open(fileName, "r")
 	map = []
@@ -137,6 +140,8 @@ def createMap(fileName,player):
 				boxes.append(EndPoint(column*75, 380))#flag goes from base to top
 			elif map[row][column] == "@":#player
 				player.rect.x,player.rect.y = column*75,row*75+20
+			elif map[row][column] == "0":#coin
+				coins.append(Coin((column*75+5), (row*75)+21)) 
 
 def LoadNextLevel(player): #loads future levels
 	global level
@@ -151,7 +156,7 @@ def LoadNextLevel(player): #loads future levels
 	return False
 
 def gameLoop(dt,surface,screen,clock):	
-		global gameTime,done,score
+		global gameTime,done,score,coins
 
 		pygame.event.pump()
 		for events in pygame.event.get():#quit game event
@@ -210,6 +215,15 @@ def gameLoop(dt,surface,screen,clock):
 			if update == "remove":
 				player.removeAttack(attack)
 
+		#check coins
+		for coin in coins:
+			if coin.checkCollisions(player):
+				score += 10
+				player.money += 1
+				coins.remove(coin)
+			else:
+				coin.animation(dt)
+
 		if player.dead == True: #gameover screen - redirects to deathLoop()
 			GameOver = font1.render("Game Over",True,(255,255,255))
 			GameOverRect = GameOver.get_rect()
@@ -224,6 +238,9 @@ def gameLoop(dt,surface,screen,clock):
 	#----------------- DRAWING START-----------------------------------
 		for enemy in enemies:
 			enemy.draw(surface)
+
+		for coin in coins:
+			coin.draw(surface)
 
 		player.draw(surface)
 
