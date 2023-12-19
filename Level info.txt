@@ -9,15 +9,16 @@ Objects:
 . , Sky background
 X , invisible wall
 # , end flag
+0 , coin
+$ , shop
 
 Player:
 @ , player start position
 
 Enemies:
-o , slime
+/ , sword skeleton
++ , bow skeleton
 > , bat
-+ , shooter
-^ , spike
 
 -------------------------------------------------------------------------------------------------------
 
