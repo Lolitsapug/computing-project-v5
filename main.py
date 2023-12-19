@@ -3,6 +3,7 @@ from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible,Shop
 from classes.enemies import Sword, Bat, Shooter,Spike
 from classes.coin import Coin
+from classes.textbox import Text
 
 print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
 
@@ -25,9 +26,8 @@ levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 animationIndex = 0
 gameTime = 0 #game timer (miliseconds)
 score = 0
-name = input("TEMPORARY enter usernname: ")
-userID = 0
-
+userID = None
+textbox = Text(10,40)
 
 title = pygame.image.load("menuImages/catlegendstitle.png")
 loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png","menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
@@ -36,7 +36,7 @@ font0 = pygame.font.SysFont('freesanbold.ttf', 60)
 font1 = pygame.font.SysFont('freesanbold.ttf', 50)
 font2 = pygame.font.SysFont('freesanbold.ttf', 40)
 
-def createUser():
+def createUser(name):
 	global userID
 	connection = sqlite3.connect('Database.db')
 	cursor = connection.cursor()
@@ -63,6 +63,9 @@ def createUser():
 	except Exception as e:
 		print("Error Message :", str(e))
 		connection.rollback()
+	
+	print(f"created user {name}")
+	print(f"ID {userID}")
 
 def readData():
 	connection = sqlite3.connect('Database.db')
@@ -90,18 +93,19 @@ def readData():
 	return rows
 
 def insertData():
-	connection = sqlite3.connect('Database.db')
-	cursor = connection.cursor()
-	rec = (userID, gameTime//1000, score, level+1)
-	sql = '''
-        INSERT INTO Leaderboard (userID, Time, Score, Level) VALUES (?, ?, ?, ?)
-        '''
-	try:
-		cursor.execute(sql, rec)
-		connection.commit()
-	except Exception as e:
-		print("Error Message :", str(e))
-		connection.rollback()
+	if userID != None:
+		connection = sqlite3.connect('Database.db')
+		cursor = connection.cursor()
+		rec = (userID, gameTime//1000, score, level+1)
+		sql = '''
+			INSERT INTO Leaderboard (userID, Time, Score, Level) VALUES (?, ?, ?, ?)
+			'''
+		try:
+			cursor.execute(sql, rec)
+			connection.commit()
+		except Exception as e:
+			print("Error Message :", str(e))
+			connection.rollback()
 
 def createMap(fileName,player):
 	global boxes,enemies,coins
@@ -318,7 +322,6 @@ def shopLoop(surface,screen,buttons):
 	screen.blit(scaledSurface, (0, 0))
 	return "shop"
 
-
 def menuLoop(dt,surface,screen,buttons):
 	global done,level,levels,player,gameTime,animationIndex
 	pygame.event.pump()
@@ -334,6 +337,11 @@ def menuLoop(dt,surface,screen,buttons):
 				if buttons[b][1].collidepoint(pos) == True:
 					print(b + " was clicked")
 					clicked = b
+
+		if events.type == pygame.KEYDOWN:
+			textbox.update(events)
+			if events.key == pygame.K_RETURN:
+				createUser(textbox.value)
 
 	if clicked == "start": #BUTTON FUNCTIONS
 		levels = ["Level1.txt","Level2.txt","Level3.txt"]
@@ -366,6 +374,9 @@ def menuLoop(dt,surface,screen,buttons):
 	#------------------ DRAWING SURFACE ---------------------
 	surface.blit(images[round(animationIndex//15)],(0,0))
 	surface.blit(title,(0,0))
+
+	textbox.draw(surface)
+
 	for b in buttons:
 		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
 	
@@ -466,13 +477,12 @@ def leaderboardLoop(screen,surface):
 #-------------------- MAIN LOOP -----------------------
 def main():#initial game initialisation
 	global player
-	print("starting game")
 	surface = pygame.Surface((WIDTH, HEIGHT))
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
 	dt = 0
 	player = Player(100, 100) 
-	createUser()
+
 	loop = "menu" #switches between menus and game
 	menubuttons = { 
 		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,250,250,100)],
