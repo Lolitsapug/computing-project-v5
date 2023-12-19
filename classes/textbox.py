@@ -13,12 +13,12 @@ class Text():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 self.value = self.value[:-1]
-            else:
+            elif event.key != pygame.K_RETURN:
                 self.value += event.unicode #grabs the unicode letter for the button pressed
 
-        self.text = self.font.render(f"name:{self.value}",True,(255,255,0))
+            self.text = self.font.render(f"name:{self.value}",True,(255,255,0))
 
-        self.rect.width = self.text.get_width() + 10
+            self.rect.width = self.text.get_width() + 10
 
     def draw(self,screen):
         pygame.draw.rect(screen, (0,0,0), self.rect, 3)
@@ -30,3 +30,6 @@ class Text():
     
     def getText(self):
         return self.value
+    
+    def setGreen(self):
+        self.text = self.font.render(f"name:{self.value}",True,(0,255,0))

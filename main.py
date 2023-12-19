@@ -340,7 +340,8 @@ def menuLoop(dt,surface,screen,buttons):
 
 		if events.type == pygame.KEYDOWN:
 			textbox.update(events)
-			if events.key == pygame.K_RETURN:
+			if events.key == pygame.K_RETURN and textbox.value != "":
+				textbox.setGreen()
 				createUser(textbox.value)
 
 	if clicked == "start": #BUTTON FUNCTIONS
