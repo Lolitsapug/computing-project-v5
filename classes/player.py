@@ -46,6 +46,7 @@ class Player(Sprite):
 		self.playing = False
 		self.ammo = 5
 		self.money = 0
+		self.touchingShop = False
 
 	def getAttacks(self):
 		return self.attacks #returns all attacks 
@@ -64,7 +65,7 @@ class Player(Sprite):
 		self.rect.move_ip([self.xVel*dt,self.yVel*dt]) 
 		#moves player with delta time compenstating for lag
 	
-	def draw(self, screen):
+	def draw(self,screen):
 		if self.toggleArc == 1:  #draws projectile prediction arc
 			self.projectileArc(screen, False)
 
@@ -80,11 +81,15 @@ class Player(Sprite):
 		else: #player moving right
 			screen.blit(self.images[round(self.animationIndex/15)], (x,y))
 		
+		self.drawHealth(screen)
+
+	def drawHealth(self,screen):
 		for i in range(self.health): #displays number of lives on top left of screen
 			screen.blit(Heart, (40*i+10,10))
 	
 	def collisions(self,boxes,dt):
 		end = False
+		check = None
 		if self.dead == False: #future collision rect using velocities
 			temprect = pygame.Rect(self.rect.x+self.xVel,self.rect.y+self.yVel, self.rect.width, self.rect.height)
 			for box in boxes:
@@ -92,7 +97,10 @@ class Player(Sprite):
 				right = False
 				top = False
 				bottom = False
-				if box.type == "end" and temprect.colliderect(box.rect): #checks if colliding with end box
+				if box.type == "shop" and temprect.colliderect(box.rect): #touching a shop so the check flag is set to true
+					self.touchingShop = True
+					check = box
+				elif box.type == "end" and temprect.colliderect(box.rect): #checks if colliding with end box
 					end = True
 				elif temprect.colliderect(box.rect) and box.type == "ground":
 					if self.xVel != 0: #checking player x collisions
@@ -148,12 +156,16 @@ class Player(Sprite):
 			if collided == False:
 				self.grounded = False
 
+			if check == None:
+				self.touchingShop = False
+
 			self.move(dt)
-			return end
+		return [end,check]
 
 	def update(self,dt,clock,screen):
 		slash = False
-		jump = False	
+		jump = False
+		interaction = False
 		global cameraOffset
 		if self.dead == False:
 			self.past += clock.get_time() #attack movement delay
@@ -193,6 +205,9 @@ class Player(Sprite):
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 3:
 						slash = self.slash(1) #static attack
 
+				if key[pygame.K_f] and self.touchingShop:
+					interaction = True
+
 			if self.grounded == False: #gravity	
 				if self.yVel < self.yMaxSpeed:
 					self.yVel = self.yVel + gravity*dt
@@ -209,7 +224,8 @@ class Player(Sprite):
 			cameraOffset -= 0.75*dt + self.xVel #player moving right
 			if cameraOffset <= self.rect.x - 500:
 				cameraOffset = self.rect.x - 500
-		adjustOffset(cameraOffset) #sends back cameraoffset to the sprites file
+		adjustOffset(cameraOffset) #sends back cameraoffset to the sprites fil
+		return interaction
 
 	def animation(self,dt,jump,slash):
 		if self.playing: #main animation loop

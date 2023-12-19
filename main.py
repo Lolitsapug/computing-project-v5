@@ -1,6 +1,6 @@
 import pygame, sqlite3 #imports
 from classes.player import Player
-from classes.box import Box,Sky,EndPoint,Invisible
+from classes.box import Box,Sky,EndPoint,Invisible,Shop
 from classes.enemies import Sword, Bat, Shooter,Spike
 from classes.coin import Coin
 
@@ -19,6 +19,7 @@ player = None
 boxes = []
 enemies = []
 coins = []
+interactables = []
 level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 animationIndex = 0
@@ -141,7 +142,9 @@ def createMap(fileName,player):
 			elif map[row][column] == "@":#player
 				player.rect.x,player.rect.y = column*75,row*75+20
 			elif map[row][column] == "0":#coin
-				coins.append(Coin((column*75+5), (row*75)+21)) 
+				coins.append(Coin((column*75), (row*75)+21)) 
+			elif map[row][column] == "$":#shop
+				boxes.append(Shop((column*75-12), (row*75-6))) 
 
 def LoadNextLevel(player): #loads future levels
 	global level
@@ -172,19 +175,29 @@ def gameLoop(dt,surface,screen,clock):
 		timeText,scoreText,ammoText,moneyText = font1.render(str(gameTime//1000),True,(0,255,0)),font2.render(str(f"score:{score}"),True,(255,255,0)),font2.render(f"ammo:{player.ammo}",True,(255,255,0)),font2.render(f"coins:{player.money}",True,(255,255,0))
 		timeRect,scoreRect,ammoRect,moneyRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect(),moneyText.get_rect()
 		timeRect.right,timeRect.y = WIDTH-10,10
-		scoreRect.x,scoreRect.y = 15,75
+		scoreRect.x,scoreRect.y = 15,105
 		ammoRect.x,ammoRect.y = 15,45
-		moneyRect.x,moneyRect.y = 15,105
+		moneyRect.x,moneyRect.y = 15,75
 	
 		surface.fill(BACKGROUND)
 		for box in boxes:
 			box.draw(surface) #draws background so it doesnt cover up projectile arc
 
-		player.update(dt,clock,surface)
-		if player.collisions(boxes,dt):#if collision with end flag loads next level
+		if player.update(dt,clock,surface):
+			return "shop"
+		IDs = player.collisions(boxes,dt)
+
+		if IDs[0]:#if collision with end flag loads next level
 			print("flag collision?")
 			if LoadNextLevel(player):
-				return "gameOver" #player has reached end of levels
+				return "gameOver" #player has reached end of levels#
+		
+		if IDs[1] == None: #touching a box to trigger different image
+			for box in boxes:
+				if box.type == "shop":
+					box.animationIndex = 0
+		else:
+			IDs[1].animationIndex = 1
 
 		for enemy in enemies: #interactions with all enemies
 			enemy.update(dt,player) #updates enemies for movement/calculations
@@ -256,8 +269,55 @@ def gameLoop(dt,surface,screen,clock):
 		screen.blit(scaledSurface, (0, 0))
 		return "game"
 
-def shopLoop(screen):
+def shopLoop(surface,screen,buttons):
 	pygame.event.pump()
+	clicked = None
+	for events in pygame.event.get():
+		if events.type == pygame.QUIT:
+			pygame.quit()
+		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
+			pos = pygame.mouse.get_pos()
+			for b in buttons:
+				if buttons[b][1].collidepoint(pos) == True:
+					print(b + " was clicked")
+					clicked = b
+
+	ammoText,moneyText,topText = font2.render(f"ammo:{player.ammo}",True,(255,255,0)),font2.render(f"coins:{player.money}",True,(255,255,0)),font0.render("Shop", True, (255,255,255))
+
+	if clicked == "ammo" and player.money >= 1:
+		player.ammo += 3
+		player.money -= 1
+
+	elif clicked == "heart" and player.money >= 1:
+		player.health += 1
+		player.money -= 1
+	
+	elif clicked == "exit":
+		return "game"
+
+	if player.money <= 0:
+		moneyText = font2.render(f"coins:{player.money}",True,(255,75,75))
+	
+	ammoRect,moneyRect,topTextRect = ammoText.get_rect(),moneyText.get_rect(),topText.get_rect()
+	ammoRect.x,ammoRect.y = 15,45
+	moneyRect.x,moneyRect.y = 15,75
+	topTextRect.centerx, topTextRect.centery = WIDTH // 2, 80
+
+	surface.fill(BACKGROUND)
+
+	surface.blit(ammoText,ammoRect) #ammo top left
+	surface.blit(moneyText,moneyRect) #money top left
+	surface.blit(topText,topTextRect) #money top left
+
+	player.drawHealth(surface)
+
+	for b in buttons:
+		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
+
+	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
+	screen.blit(scaledSurface, (0, 0))
+	return "shop"
+
 
 def menuLoop(dt,surface,screen,buttons):
 	global done,level,levels,player,gameTime,animationIndex
@@ -426,6 +486,14 @@ def main():#initial game initialisation
 		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(WIDTH-250-300,450,250,100)]
 	}
 
+	shopbuttons = { 
+		"ammo":[pygame.image.load("menuImages/AMMObutton.png"),pygame.Rect(250,250,250,100)],
+		"heart":[pygame.image.load("menuImages/HEARTbutton.png"),pygame.Rect(780,250,250,100)],
+		"exit":[pygame.image.load("menuImages/EXITbutton.png"), pygame.Rect(150,500,250,100)]
+		
+
+	}
+
 	pygame.mixer.music.load("Grasslands Theme.mp3")
 	pygame.mixer.music.set_volume(0.25)
 	pygame.mixer.music.play(loops=-1)
@@ -435,7 +503,7 @@ def main():#initial game initialisation
 		if loop == "game":
 			loop = gameLoop(dt,surface,screen,clock)
 		elif loop == "shop":
-			shopLoop(surface,screen)
+			loop = shopLoop(surface,screen,shopbuttons)
 		elif loop == "menu":
 			loop = menuLoop(dt,surface,screen,menubuttons)
 		elif loop == "gameOver":

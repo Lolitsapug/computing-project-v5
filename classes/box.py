@@ -10,15 +10,19 @@ class Box(Sprite): #ground box
 
 class Sky(Sprite): #background sky
 	def __init__(self, startx, starty):
-		super().__init__(["sprites/back.png"], startx, starty,"sky") #get better background image?
+		super().__init__(["sprites/back.png"], startx, starty,"sky") 
 
 class EndPoint(Sprite):
 	def __init__(self,startx,starty):
-		super().__init__(["sprites/flagTall.png"],startx,starty,"end") #temporary flag image
+		super().__init__(["sprites/flagTall.png"],startx,starty,"end") 
 
 class Invisible(Sprite):
 	def __init__(self,startx,starty):
-		super().__init__(["sprites/back.png"],startx,starty,"ground") #invisible wall
+		super().__init__(["sprites/back.png"],startx,starty,"ground") 
 
 	def draw(self,surface):
 		pass
+
+class Shop(Sprite):
+	def __init__(self,startx,starty):
+		super().__init__(["sprites/shop.png","sprites/shop(2).png"],startx,starty,"shop") #invisible wall
