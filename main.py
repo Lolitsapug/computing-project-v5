@@ -456,15 +456,19 @@ def leaderboardLoop(screen,surface):
 	topTextRect = topText.get_rect()
 	topTextRect.centerx, topTextRect.centery = WIDTH // 2, 100
 
+	surface.fill(BACKGROUND)
+	surface.blit(topText, topTextRect)
+
 	rows = readData()
 	if rows == "error":
 		print("error fetching leaderboard data - returning to menu")
 		return "menu"
-	surface.fill(BACKGROUND)
-	surface.blit(topText, topTextRect)
 
 	for i in range(len(rows)):
-		text = font2.render(f"{str(i+1).ljust(2,' ')}. {rows[i][3].ljust(8,' ')} | Score: {str(rows[i][0]).ljust(4,' ')} | Time: {str(rows[i][1]).ljust(4,' ')} | Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
+		text = font2.render(f"{str(i+1).ljust(2,' ')}. {rows[i][3].ljust(8,' ')} |  \
+					  Score: {str(rows[i][0]).ljust(4,' ')} | \
+					  Time: {str(rows[i][1]).ljust(4,' ')} | \
+					  Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
 		rect = text.get_rect()
 		rect.x,rect.y = WIDTH/2 - 300,150 + i*40
 		surface.blit(text, rect)
