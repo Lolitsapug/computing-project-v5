@@ -16,6 +16,7 @@ HEIGHT = 720
 BACKGROUND = (69,127,187) #blue
 
 done = False
+custom = False
 player = None
 boxes = []
 enemies = []
@@ -93,7 +94,7 @@ def readData():
 	return rows
 
 def insertData():
-	if userID != None:
+	if userID != None and not custom:
 		connection = sqlite3.connect('Database.db')
 		cursor = connection.cursor()
 		rec = (userID, gameTime//1000, score, level+1)
@@ -323,7 +324,7 @@ def shopLoop(surface,screen,buttons):
 	return "shop"
 
 def menuLoop(dt,surface,screen,buttons):
-	global done,level,levels,player,gameTime,animationIndex
+	global done,level,levels,player,gameTime,animationIndex,custom
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -349,17 +350,17 @@ def menuLoop(dt,surface,screen,buttons):
 		level = 0
 		player = Player(100,100)
 		gameTime = 0
+		custom = False
 		createMap(levels[level],player)
 		return "game"
 	elif clicked == "loadTxt":
 		print("loading custom map")
 		levels = ["custom.txt"]
-		#txt = input("map txt name"),createmap(txt), levels = [txt,bossfight], loop = "game"
-		#levels = ["customMap.txt","BossLevel.txt"]
 		level = 0
 		player = Player(100, 100)
 		gameTime = 0
 		createMap(levels[level],player)
+		custom = True #so score doesnt get added to leaderboard
 		return "game"	
 	elif clicked == "leaderboard":
 		print("loading leaderboard") #load a leaderboard page
@@ -412,7 +413,7 @@ def deathLoop(screen,surface,buttons):
 	GameOverRect = GameOver.get_rect()
 	GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//4+50
 
-	scoreText = font2.render(f"Total Score: {score + player.money*10}",True,textColour)
+	scoreText = font2.render(f"Total Score: {score}",True,textColour)
 	scoreRect = scoreText.get_rect()
 	scoreRect.x,scoreRect.centery = WIDTH//3,HEIGHT//3+50
 
@@ -466,9 +467,9 @@ def leaderboardLoop(screen,surface):
 
 	for i in range(len(rows)):
 		text = font2.render(f"{str(i+1).ljust(2,' ')}. {rows[i][3].ljust(8,' ')} |  \
-					  Score: {str(rows[i][0]).ljust(4,' ')} | \
-					  Time: {str(rows[i][1]).ljust(4,' ')} | \
-					  Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
+ Score: {str(rows[i][0]).ljust(4,' ')} | \
+ Time: {str(rows[i][1]).ljust(4,' ')} | \
+ Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
 		rect = text.get_rect()
 		rect.x,rect.y = WIDTH/2 - 300,150 + i*40
 		surface.blit(text, rect)
@@ -505,8 +506,6 @@ def main():#initial game initialisation
 		"ammo":[pygame.image.load("menuImages/AMMObutton.png"),pygame.Rect(250,250,250,100)],
 		"heart":[pygame.image.load("menuImages/HEARTbutton.png"),pygame.Rect(780,250,250,100)],
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"), pygame.Rect(150,500,250,100)]
-		
-
 	}
 
 	pygame.mixer.music.load("Grasslands Theme.mp3")
