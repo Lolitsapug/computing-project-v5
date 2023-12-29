@@ -378,7 +378,7 @@ def menuLoop(dt,surface,screen,buttons):
 	surface.blit(images[round(animationIndex//15)],(0,0))
 	surface.blit(title,(0,0))
 
-	textbox.draw(surface)
+	textbox.draw(surface,(10,12))
 
 	for b in buttons:
 		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)

@@ -20,13 +20,13 @@ class Text():
 
             self.rect.width = self.text.get_width() + 10 #resizes the outer bordering rectangle
 
-    def draw(self,screen):
+    def draw(self,screen,rect):
         pygame.draw.rect(screen, (0,0,0), self.rect, 3)       #draws bordering rectangle
         screen.blit(self.text,(self.rect.x+5,self.rect.y+5))  #draws text
 
         font = pygame.font.SysFont('freesanbold.ttf', 30)
         text = font.render("press enter to set name",True,(255,255,0))
-        screen.blit(text,(10,12))
+        screen.blit(text,rect)
     
     def getText(self):
         return self.value
