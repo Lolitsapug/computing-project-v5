@@ -77,7 +77,7 @@ def readData():
 	        SELECT Score, Time, Level, Name 
 	        FROM Leaderboard, User
 	        WHERE Leaderboard.userID = User.UserID 
-	        ORDER BY Score DESC, Time DESC 
+	        ORDER BY Score DESC, Time DESC, scoreId ASC
 	        LIMIT 10;
 	        '''
 	# executing sql statement with try and except incase of errors
@@ -448,7 +448,7 @@ def leaderboardLoop(screen,surface):
 			done = True
 		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
 			pos = pygame.mouse.get_pos()
-			if pygame.Rect(150,500,250,100).collidepoint(pos):
+			if pygame.Rect(50,580,250,100).collidepoint(pos):
 				print("title " + " was clicked")
 
 				return "menu"
@@ -474,7 +474,7 @@ def leaderboardLoop(screen,surface):
 		rect.x,rect.y = WIDTH/2 - 300,150 + i*40
 		surface.blit(text, rect)
 
-	surface.blit(pygame.image.load("menuImages/MENUbutton.png"), pygame.Rect(150,500,250,100))
+	surface.blit(pygame.image.load("menuImages/MENUbutton.png"), pygame.Rect(50,580,250,100))
 
 	scaledSurface = pygame.transform.scale(surface, (1280, 720))  # screen scaling
 	screen.blit(scaledSurface, (0, 0))
