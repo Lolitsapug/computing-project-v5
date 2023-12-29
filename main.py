@@ -36,6 +36,7 @@ images = [pygame.image.load(image) for image in loadimages]
 font0 = pygame.font.SysFont('freesanbold.ttf', 60)
 font1 = pygame.font.SysFont('freesanbold.ttf', 50)
 font2 = pygame.font.SysFont('freesanbold.ttf', 40)
+font3 = pygame.font.Font("robotoMono.ttf", 25)
 
 def createUser(name):
 	global userID
@@ -466,12 +467,12 @@ def leaderboardLoop(screen,surface):
 		return "menu"
 
 	for i in range(len(rows)):
-		text = font2.render(f"{str(i+1).ljust(2,' ')}. {rows[i][3].ljust(8,' ')} |  \
- Score: {str(rows[i][0]).ljust(4,' ')} | \
- Time: {str(rows[i][1]).ljust(4,' ')} | \
- Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
+		text = font3.render(f"{(str(i+1) + '.').ljust(3,' ')}{rows[i][3].ljust(10,' ')[:10]} | \
+Score: {str(rows[i][0]).ljust(4,' ')} | \
+Time: {str(rows[i][1]).ljust(4,' ')} | \
+Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
 		rect = text.get_rect()
-		rect.x,rect.y = WIDTH/2 - 300,150 + i*40
+		rect.x,rect.y = WIDTH/2 - 380,150 + i*40
 		surface.blit(text, rect)
 
 	surface.blit(pygame.image.load("menuImages/MENUbutton.png"), pygame.Rect(50,580,250,100))
