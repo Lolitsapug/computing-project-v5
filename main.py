@@ -364,8 +364,7 @@ def menuLoop(dt,surface,screen,buttons):
 		custom = True #so score doesnt get added to leaderboard
 		return "game"	
 	elif clicked == "leaderboard":
-		print("loading leaderboard") #load a leaderboard page
-		return "leaderboard"
+		return "leaderboard" #load a leaderboard page
 	elif clicked == "exit":
 		print("quitting game")
 		done = True
@@ -490,28 +489,26 @@ def main():#initial game initialisation
 	dt = 0
 	player = Player(100, 100) 
 
-	loop = "menu" #switches between menus and game
 	menubuttons = { 
 		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,250,250,100)],
 		"loadTxt":[pygame.image.load("menuImages/LOADbutton.png"),pygame.Rect(160,400,250,100)],
 		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(870,250,250,100)],
-		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]
-	}
+		"exit":[pygame.image.load("menuImages/EXITbutton.png"),pygame.Rect(870,400,250,100)]}
 
 	deathbuttons = {
 		"title":[pygame.image.load("menuImages/MENUbutton.png"),pygame.Rect(300,450,250,100)],
-		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(WIDTH-250-300,450,250,100)]
-	}
+		"leaderboard":[pygame.image.load("menuImages/SCOREbutton.png"),pygame.Rect(WIDTH-250-300,450,250,100)]}
 
 	shopbuttons = { 
 		"ammo":[pygame.image.load("menuImages/AMMObutton.png"),pygame.Rect(250,250,250,100)],
 		"heart":[pygame.image.load("menuImages/HEARTbutton.png"),pygame.Rect(780,250,250,100)],
-		"exit":[pygame.image.load("menuImages/EXITbutton.png"), pygame.Rect(150,500,250,100)]
-	}
+		"exit":[pygame.image.load("menuImages/EXITbutton.png"), pygame.Rect(150,500,250,100)]}
 
 	pygame.mixer.music.load("Grasslands Theme.mp3")
 	pygame.mixer.music.set_volume(0.25)
 	pygame.mixer.music.play(loops=-1)
+
+	loop = "menu" #switches between menus and game
 
 #----------------- MAIN GAME LOOP START----------------------------	
 	while done == False:
