@@ -1,4 +1,4 @@
-import pygame, sqlite3 #imports
+import pygame, sqlite3, os.path #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible,Shop
 from classes.enemies import Sword, Bat, Shooter,Spike
@@ -26,6 +26,35 @@ score = 0
 level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 menuAnimation = 0
+
+def createTables():
+	connection = sqlite3.connect('Database.db')
+	cursor = connection.cursor()
+	sqlLeaderboard = '''
+	CREATE TABLE IF NOT EXISTS "Leaderboard" (
+		"scoreId"	INTEGER UNIQUE,
+		"userID"	INTEGER,
+		"Time"	INTEGER,
+		"Score"	INTEGER,
+		"Level"	INTEGER,
+		PRIMARY KEY("scoreId" AUTOINCREMENT),
+		FOREIGN KEY("userID") REFERENCES "User"("UserID")
+	)'''
+	#IF NOT EXISTS only creates a table if it doesnt exist.
+	sqlUser = '''
+	CREATE TABLE IF NOT EXISTS "User" (
+	"UserID"	INTEGER UNIQUE,
+	"Name"	TEXT,
+	PRIMARY KEY("UserID" AUTOINCREMENT)
+	)'''
+	try:
+		cursor.execute(sqlLeaderboard)
+		cursor.execute(sqlUser)
+		connection.commit()
+	except Exception as e:
+		print("Error Message :", str(e))
+		connection.rollback()
+
 
 userID = None
 textbox = Text(10,40)
@@ -477,6 +506,7 @@ Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
 #-------------------- MAIN LOOP -----------------------
 def main():#initial game initialisation
 	global player
+	createTables() #creates Leaderboard and User table if they dont exist
 	surface = pygame.Surface((WIDTH, HEIGHT))
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
