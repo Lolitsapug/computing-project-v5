@@ -67,20 +67,6 @@ class Bat(Enemy):
 			self.yVel = 0
 
 		self.animation(dt)
-
-	def boxCollisions(self,dt,boxes): #simple box collisions
-		self.rect.move_ip([self.xVel*dt,0])
-		for box in boxes:
-			if self.rect.colliderect(box.rect) and box.type == "ground":
-				self.rect.move_ip([-self.xVel*dt,0])
-				self.xVel = 0
-
-		self.rect.move_ip([0,self.yVel*dt])  
-
-		for box in boxes:
-			if self.rect.colliderect(box.rect) and box.type == "ground":
-				self.rect.move_ip([0,-self.yVel*dt]) 
-				self.yvel = 0			
 	
 	def calcVel(self,player): #like projectile calculation moves bat toward player
 		if self.rect.centerx >= player.rect.centerx: #gets the directions the mouse is in proportion to the object
@@ -94,8 +80,22 @@ class Bat(Enemy):
 		if abs(player.rect.centery-self.rect.centery) != 0: #makes sure the denominator isnt 0 as cant divide by 0
 			#uses arctan of the opposite and adjacent triangle distances to find the angle (trigonometry)
 			angle = math.atan(abs(self.rect.centerx-player.rect.centerx)/abs(player.rect.centery-self.rect.centery)) 
-			self.yVel = self.speed * math.cos(angle)*yDirection 
-			self.xVel = self.speed * math.sin(angle)*xDirection#corrects the speed according to directions
+			self.yVel = self.speed * math.cos(angle)*yDirection #corrects the speed according to directions
+			self.xVel = self.speed * math.sin(angle)*xDirection 
+
+	def boxCollisions(self,dt,boxes): #simple box collisions
+		self.rect.move_ip([self.xVel*dt,0]) #x axis collisions
+		for box in boxes:
+			if self.rect.colliderect(box.rect) and box.type == "ground":
+				self.rect.move_ip([-self.xVel*dt,0])
+				self.xVel = 0
+
+		self.rect.move_ip([0,self.yVel*dt])   #y axis collisions
+
+		for box in boxes:
+			if self.rect.colliderect(box.rect) and box.type == "ground":
+				self.rect.move_ip([0,-self.yVel*dt]) 
+				self.yvel = 0			
 
 idle = ["animations/bow/idle1.png","animations/bow/idle2.png","animations/bow/idle3.png","animations/bow/idle4.png","animations/bow/idle5.png","animations/bow/idle6.png"]
 shoot = ["animations/bow/shoot1.png","animations/bow/shoot2.png","animations/bow/shoot3.png","animations/bow/shoot4.png","animations/bow/shoot5.png","animations/bow/shoot6.png","animations/bow/shoot7.png","animations/bow/shoot8.png","animations/bow/shoot9.png","animations/bow/shoot10.png"]
