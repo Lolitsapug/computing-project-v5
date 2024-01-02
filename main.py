@@ -21,22 +21,16 @@ player = None
 boxes = []
 enemies = []
 coins = []
-interactables = []
-level = 0 #indicates what level to load
-levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
-animationIndex = 0
 gameTime = 0 #game timer (miliseconds)
 score = 0
+level = 0 #indicates what level to load
+levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
+menuAnimation = 0
+
 userID = None
 textbox = Text(10,40)
 
-title = pygame.image.load("menuImages/catlegendstitle.png")
-loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png","menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
-images = [pygame.image.load(image) for image in loadimages]
-font0 = pygame.font.SysFont('freesanbold.ttf', 60)
-font1 = pygame.font.SysFont('freesanbold.ttf', 50)
-font2 = pygame.font.SysFont('freesanbold.ttf', 40)
-font3 = pygame.font.Font("robotoMono.ttf", 25)
+fonts = [pygame.font.SysFont('freesanbold.ttf', 60),pygame.font.SysFont('freesanbold.ttf', 50),pygame.font.SysFont('freesanbold.ttf', 40),pygame.font.Font("robotoMono.ttf", 25)]
 
 def createUser(name):
 	global userID
@@ -178,7 +172,7 @@ def gameLoop(dt,surface,screen,clock):
 		if player.dead == False:
 			gameTime += clock.get_time()
 		#onscreen text statistics
-		timeText,scoreText,ammoText,moneyText = font1.render(str(gameTime//1000),True,(0,255,0)),font2.render(str(f"score:{score}"),True,(255,255,0)),font2.render(f"ammo:{player.ammo}",True,(255,255,0)),font2.render(f"coins:{player.money}",True,(255,255,0))
+		timeText,scoreText,ammoText,moneyText = fonts[1].render(str(gameTime//1000),True,(0,255,0)),fonts[2].render(str(f"score:{score}"),True,(255,255,0)),fonts[2].render(f"ammo:{player.ammo}",True,(255,255,0)),fonts[2].render(f"coins:{player.money}",True,(255,255,0))
 		timeRect,scoreRect,ammoRect,moneyRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect(),moneyText.get_rect()
 		timeRect.right,timeRect.y = WIDTH-10,10
 		scoreRect.x,scoreRect.y = 15,105
@@ -244,12 +238,12 @@ def gameLoop(dt,surface,screen,clock):
 				coin.animation(dt)
 
 		if player.dead == True: #gameover screen - redirects to deathLoop()
-			GameOver = font1.render("Game Over",True,(255,255,255))
+			GameOver = fonts[1].render("Game Over",True,(255,255,255))
 			GameOverRect = GameOver.get_rect()
 			GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//3
 			surface.blit(GameOver,GameOverRect)
 
-			inputText = font2.render("Press any button to continue",True,(255,255,255))
+			inputText = fonts[2].render("Press any button to continue",True,(255,255,255))
 			inputTextRect = inputText.get_rect()
 			inputTextRect.centerx,inputTextRect.top = WIDTH//2,GameOverRect.bottom + 5
 			surface.blit(inputText,inputTextRect)
@@ -288,7 +282,7 @@ def shopLoop(surface,screen,buttons):
 					print(b + " was clicked")
 					clicked = b
 
-	ammoText,moneyText,topText = font2.render(f"ammo:{player.ammo}",True,(255,255,0)),font2.render(f"coins:{player.money}",True,(255,255,0)),font0.render("Shop", True, (255,255,255))
+	ammoText,moneyText,topText = fonts[2].render(f"ammo:{player.ammo}",True,(255,255,0)),fonts[2].render(f"coins:{player.money}",True,(255,255,0)),fonts[0].render("Shop", True, (255,255,255))
 
 	if clicked == "ammo" and player.money >= 1:
 		player.ammo += 3
@@ -302,7 +296,7 @@ def shopLoop(surface,screen,buttons):
 		return "game"
 
 	if player.money <= 0:
-		moneyText = font2.render(f"coins:{player.money}",True,(255,75,75))
+		moneyText = fonts[2].render(f"coins:{player.money}",True,(255,75,75))
 	
 	ammoRect,moneyRect,topTextRect = ammoText.get_rect(),moneyText.get_rect(),topText.get_rect()
 	ammoRect.x,ammoRect.y = 15,45
@@ -324,8 +318,8 @@ def shopLoop(surface,screen,buttons):
 	screen.blit(scaledSurface, (0, 0))
 	return "shop"
 
-def menuLoop(dt,surface,screen,buttons):
-	global done,level,levels,player,gameTime,animationIndex,custom
+def menuLoop(dt,surface,screen,buttons,images,title):
+	global done,level,levels,player,gameTime,menuAnimation,custom
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -370,11 +364,11 @@ def menuLoop(dt,surface,screen,buttons):
 		done = True
 		pygame.quit()
 
-	animationIndex = animationIndex+0.15*dt
-	if animationIndex >= 6*15:
-		animationIndex = 0		
+	menuAnimation = menuAnimation+0.15*dt
+	if menuAnimation >= 6*15:
+		menuAnimation = 0		
 	#------------------ DRAWING SURFACE ---------------------
-	surface.blit(images[round(animationIndex//15)],(0,0))
+	surface.blit(images[round(menuAnimation//15)],(0,0))
 	surface.blit(title,(0,0))
 
 	textbox.draw(surface,(10,12))
@@ -409,19 +403,19 @@ def deathLoop(screen,surface,buttons):
 
 	textColour = (255,255,255)
 
-	GameOver = font0.render("Game Over!",True,textColour)
+	GameOver = fonts[0].render("Game Over!",True,textColour)
 	GameOverRect = GameOver.get_rect()
 	GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//4+50
 
-	scoreText = font2.render(f"Total Score: {score}",True,textColour)
+	scoreText = fonts[2].render(f"Total Score: {score}",True,textColour)
 	scoreRect = scoreText.get_rect()
 	scoreRect.x,scoreRect.centery = WIDTH//3,HEIGHT//3+50
 
-	time = font2.render(f"Time: {gameTime//1000}",True,textColour)
+	time = fonts[2].render(f"Time: {gameTime//1000}",True,textColour)
 	timeRect = time.get_rect()
 	timeRect.x,timeRect.centery = WIDTH//3,HEIGHT//3 +100
 
-	levelText = font2.render(f"Level: {level+1}",True,textColour)
+	levelText = fonts[2].render(f"Level: {level+1}",True,textColour)
 	levelRect = levelText.get_rect()
 	levelRect.x,levelRect.centery = WIDTH//3,HEIGHT//3 +150
 
@@ -453,7 +447,7 @@ def leaderboardLoop(screen,surface):
 
 				return "menu"
 
-	topText = font0.render("Leaderboard", True, (255,255,255))
+	topText = fonts[0].render("Leaderboard", True, (255,255,255))
 	topTextRect = topText.get_rect()
 	topTextRect.centerx, topTextRect.centery = WIDTH // 2, 100
 
@@ -466,7 +460,7 @@ def leaderboardLoop(screen,surface):
 		return "menu"
 
 	for i in range(len(rows)):
-		text = font3.render(f"{(str(i+1) + '.').ljust(3,' ')}{rows[i][3].ljust(10,' ')[:10]} | \
+		text = fonts[3].render(f"{(str(i+1) + '.').ljust(3,' ')}{rows[i][3].ljust(10,' ')[:10]} | \
 Score: {str(rows[i][0]).ljust(4,' ')} | \
 Time: {str(rows[i][1]).ljust(4,' ')} | \
 Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
@@ -503,6 +497,11 @@ def main():#initial game initialisation
 		"ammo":[pygame.image.load("menuImages/AMMObutton.png"),pygame.Rect(250,250,250,100)],
 		"heart":[pygame.image.load("menuImages/HEARTbutton.png"),pygame.Rect(780,250,250,100)],
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"), pygame.Rect(150,500,250,100)]}
+	
+	title = pygame.image.load("menuImages/catlegendstitle.png")
+	loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png","menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
+	images = [pygame.image.load(image) for image in loadimages]
+	
 
 	pygame.mixer.music.load("Grasslands Theme.mp3")
 	pygame.mixer.music.set_volume(0.25)
@@ -517,7 +516,7 @@ def main():#initial game initialisation
 		elif loop == "shop":
 			loop = shopLoop(surface,screen,shopbuttons)
 		elif loop == "menu":
-			loop = menuLoop(dt,surface,screen,menubuttons)
+			loop = menuLoop(dt,surface,screen,menubuttons,images,title)
 		elif loop == "gameOver":
 			loop = deathLoop(screen,surface,deathbuttons)
 		elif loop == "leaderboard":
