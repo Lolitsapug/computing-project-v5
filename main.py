@@ -1,4 +1,4 @@
-import pygame, sqlite3, os.path #imports
+import pygame, sqlite3 #imports
 from classes.player import Player
 from classes.box import Box,Sky,EndPoint,Invisible,Shop
 from classes.enemies import Sword, Bat, Shooter,Spike
@@ -27,6 +27,11 @@ level = 0 #indicates what level to load
 levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 menuAnimation = 0
 
+userID = None
+textbox = Text(10,40)
+
+fonts = [pygame.font.SysFont('freesanbold.ttf', 60),pygame.font.SysFont('freesanbold.ttf', 50),pygame.font.SysFont('freesanbold.ttf', 40),pygame.font.Font("robotoMono.ttf", 25)]
+
 def createTables():
 	connection = sqlite3.connect('Database.db')
 	cursor = connection.cursor()
@@ -54,12 +59,6 @@ def createTables():
 	except Exception as e:
 		print("Error Message :", str(e))
 		connection.rollback()
-
-
-userID = None
-textbox = Text(10,40)
-
-fonts = [pygame.font.SysFont('freesanbold.ttf', 60),pygame.font.SysFont('freesanbold.ttf', 50),pygame.font.SysFont('freesanbold.ttf', 40),pygame.font.Font("robotoMono.ttf", 25)]
 
 def createUser(name):
 	global userID
@@ -294,8 +293,6 @@ def gameLoop(dt,surface,screen,clock):
 		surface.blit(ammoText,ammoRect) #ammo top left
 		surface.blit(moneyText,moneyRect) #money top left
 
-		scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
-		screen.blit(scaledSurface, (0, 0))
 		return "game"
 
 def shopLoop(surface,screen,buttons):
@@ -343,8 +340,6 @@ def shopLoop(surface,screen,buttons):
 	for b in buttons:
 		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
 
-	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
-	screen.blit(scaledSurface, (0, 0))
 	return "shop"
 
 def menuLoop(dt,surface,screen,buttons,images,title):
@@ -405,8 +400,6 @@ def menuLoop(dt,surface,screen,buttons,images,title):
 	for b in buttons:
 		surface.blit(buttons[b][0],buttons[b][1]) #blits to surface (button image,button rect)
 	
-	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
-	screen.blit(scaledSurface, (0, 0))
 	return "menu"
 
 def deathLoop(screen,surface,buttons):
@@ -457,8 +450,6 @@ def deathLoop(screen,surface,buttons):
 	surface.blit(time,timeRect)
 	surface.blit(levelText,levelRect)
 
-	scaledSurface = pygame.transform.scale(surface, (1280, 720)) #screen scaling
-	screen.blit(scaledSurface, (0, 0))
 	return "gameOver"
 
 def leaderboardLoop(screen,surface):
@@ -499,18 +490,16 @@ Level:{str(rows[i][2]).ljust(2,' ')}", True, (255,255,255))
 
 	surface.blit(pygame.image.load("menuImages/MENUbutton.png"), pygame.Rect(50,580,250,100))
 
-	scaledSurface = pygame.transform.scale(surface, (1280, 720))  # screen scaling
-	screen.blit(scaledSurface, (0, 0))
 	return "leaderboard"
 
 #-------------------- MAIN LOOP -----------------------
 def main():#initial game initialisation
 	global player
 	createTables() #creates Leaderboard and User table if they dont exist
-	surface = pygame.Surface((WIDTH, HEIGHT))
+	surface = pygame.Surface((WIDTH, HEIGHT)) #seperate surface to potentially add screen scaling.
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
-	dt = 0
+	dt = 0 #Time between each frame Delta Time
 	player = Player(100, 100) 
 
 	menubuttons = { 
@@ -529,9 +518,9 @@ def main():#initial game initialisation
 		"exit":[pygame.image.load("menuImages/EXITbutton.png"), pygame.Rect(150,500,250,100)]}
 	
 	title = pygame.image.load("menuImages/catlegendstitle.png")
-	loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png","menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
+	loadimages = ["menuImages/bg1.png","menuImages/bg2.png","menuImages/bg3.png",\
+				"menuImages/bg4.png","menuImages/bg5.png","menuImages/bg6.png","menuImages/bg6.png"]
 	images = [pygame.image.load(image) for image in loadimages]
-	
 
 	pygame.mixer.music.load("Grasslands Theme.mp3")
 	pygame.mixer.music.set_volume(0.25)
@@ -551,6 +540,9 @@ def main():#initial game initialisation
 			loop = deathLoop(screen,surface,deathbuttons)
 		elif loop == "leaderboard":
 			loop = leaderboardLoop(screen,surface)
+
+		scaledSurface = pygame.transform.scale(surface, (1280, 720))  # screen scaling
+		screen.blit(scaledSurface, (0, 0))
 
 		pygame.display.flip()
 

@@ -68,54 +68,19 @@ class Bat(Enemy):
 
 		self.animation(dt)
 
-	def boxCollisions(self,dt,boxes): #mainly same as player collisions	
-		temprect = pygame.Rect(self.rect.x+self.xVel,self.rect.y+self.yVel, self.rect.width, self.rect.height)
+	def boxCollisions(self,dt,boxes): #simple box collisions
+		self.rect.move_ip([self.xVel*dt,0])
 		for box in boxes:
-			left = False
-			right = False
-			top = False
-			bottom = False
-			if temprect.colliderect(box.rect) and box.type == "ground":
-				if self.xVel != 0: 
-					if box.rect.left < temprect.right and box.rect.left > self.rect.centerx: 
-						temprect.right = box.rect.left 
-						right = True
-					elif box.rect.right > temprect.left and box.rect.right < self.rect.centerx:
-						temprect.left = box.rect.right+1 
-						left = True	
-				if self.yVel != 0: 
-					if box.rect.top < temprect.bottom and box.rect.top > self.rect.top:					
-						temprect.bottom = box.rect.top 
-						bottom = True
-					elif box.rect.bottom > temprect.top and box.rect.bottom < self.rect.bottom:
-						temprect.top = box.rect.bottom 	
-						top = True
-				corner = False 
-				if self.yVel <0: 
-					if right and bottom:
-						temprect.right = box.rect.left-1
-						corner = True
-						self.yVel = -0.19
-					elif left and bottom:
-						temprect.left = box.rect.right+1
-						corner = True
-						self.yVel = -0.19
-				elif self.yVel >0: 
-					if right and bottom:
-						temprect.right = box.rect.left-1
-						corner = True
-					elif left and bottom:
-						temprect.left = box.rect.right+1
+			if self.rect.colliderect(box.rect) and box.type == "ground":
+				self.rect.move_ip([-self.xVel*dt,0])
+				self.xVel = 0
 
-						corner = True
-				if corner == False: #sets velocities to be 0 due to collisions
-					if top or bottom:
-						self.yVel = 0
-					if left or right:
-						self.xVel = 0
-				self.rect = temprect
-				
-		self.move(dt)
+		self.rect.move_ip([0,self.yVel*dt])  
+
+		for box in boxes:
+			if self.rect.colliderect(box.rect) and box.type == "ground":
+				self.rect.move_ip([0,-self.yVel*dt]) 
+				self.yvel = 0			
 	
 	def calcVel(self,player): #like projectile calculation moves bat toward player
 		if self.rect.centerx >= player.rect.centerx: #gets the directions the mouse is in proportion to the object

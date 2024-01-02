@@ -91,7 +91,7 @@ class Player(Sprite):
 		end = False
 		check = None
 		if self.dead == False: #future collision rect using velocities
-			temprect = pygame.Rect(self.rect.x+self.xVel,self.rect.y+self.yVel, self.rect.width, self.rect.height)
+			temprect = pygame.Rect(self.rect.x+self.xVel*dt,self.rect.y+self.yVel*dt, self.rect.width, self.rect.height)
 			for box in boxes:
 				left = False
 				right = False
