@@ -23,8 +23,8 @@ class Enemy(Sprite):
 		
 class Sword(Enemy):
 	def __init__(self, startx , starty):
-		super().__init__(["animations/sword/run1.png","animations/sword/run2.png","animations/sword/run3.png","animations/sword/run4.png","animations/sword/run5.png"], startx, starty,"sword")
-		self.xOffset = 0
+		images = ["animations/sword/run1.png","animations/sword/run2.png","animations/sword/run3.png","animations/sword/run4.png","animations/sword/run5.png"]
+		super().__init__(images, startx, starty,"sword")
 		self.speed = -0.1
 		self.distance = 150
 		self.startx = startx
@@ -52,8 +52,8 @@ class Sword(Enemy):
 
 class Bat(Enemy):
 	def __init__(self, startx , starty):
-		super().__init__(["animations/bat/bat(1).png","animations/bat/bat(2).png","animations/bat/bat(1).png"], startx, starty,"bat")
-		self.xOffset = 0
+		images = ["animations/bat/bat(1).png","animations/bat/bat(2).png","animations/bat/bat(1).png"]
+		super().__init__(images, startx, starty,"bat")
 		self.speed = 0.35
 		self.range = 350
 		self.startx = startx
@@ -102,7 +102,6 @@ shoot = ["animations/bow/shoot1.png","animations/bow/shoot2.png","animations/bow
 idlerange = [0,5]
 shootrange = [6,15]
 			 
-
 class Shooter(Enemy):
 	def __init__(self, startx , starty):
 		super().__init__(idle+shoot, startx, starty,"shooter")

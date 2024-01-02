@@ -2,7 +2,8 @@ from .sprites import Sprite,getOffset
 
 class Coin(Sprite): #ground box
     def __init__(self, startx, starty):
-        super().__init__(["animations/coin/coin (1).png","animations/coin/coin (2).png","animations/coin/coin (3).png","animations/coin/coin (4).png","animations/coin/coin (5).png","animations/coin/coin (6).png","animations/coin/coin (7).png","animations/coin/coin (8).png","animations/coin/coin (9).png","animations/coin/coin (10).png","animations/coin/coin (11).png","animations/coin/coin (12).png","animations/coin/coin (13).png","animations/coin/coin (14).png"], startx, starty,"coin")
+        images = ["animations/coin/coin (1).png","animations/coin/coin (2).png","animations/coin/coin (3).png","animations/coin/coin (4).png","animations/coin/coin (5).png","animations/coin/coin (6).png","animations/coin/coin (7).png","animations/coin/coin (8).png","animations/coin/coin (9).png","animations/coin/coin (10).png","animations/coin/coin (11).png","animations/coin/coin (12).png","animations/coin/coin (13).png","animations/coin/coin (14).png"]
+        super().__init__(images, startx, starty,"coin")
         self.value = 10
 
     def checkCollisions(self,player):
