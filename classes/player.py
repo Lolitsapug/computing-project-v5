@@ -55,11 +55,12 @@ class Player(Sprite):
 		self.attacks.remove(attack) #removes attack
 	
 	def takeDamage(self):
-		self.damagetime = 0
-		self.health = self.health-1 #player takes damage
-		print(f"player health:{self.health}")
-		if self.health == 0: # player dies at 0 health
-			self.dead = True
+		if self.damagetime >=1300: 
+			self.damagetime = 0
+			self.health = self.health-1 #player takes damage
+			print(f"player health:{self.health}")
+			if self.health == 0: # player dies at 0 health
+				self.dead = True
 
 	def move(self,dt):
 		self.rect.move_ip([self.xVel*dt,self.yVel*dt]) 

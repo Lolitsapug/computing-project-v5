@@ -4,6 +4,7 @@ from classes.box import Box,Sky,EndPoint,Invisible,Shop
 from classes.enemies import Sword, Bat, Shooter,Spike
 from classes.coin import Coin
 from classes.textbox import Text
+from classes.boss import Boss
 
 print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
 
@@ -172,7 +173,9 @@ def createMap(fileName,player):
 			elif map[row][column] == "0":#coin
 				coins.append(Coin((column*75), (row*75)+21)) 
 			elif map[row][column] == "$":#shop
-				boxes.append(Shop((column*75-12), (row*75-6))) 
+				boxes.append(Shop((column*75-12), (row*75-6)))
+			elif map[row][column] == "B":#boss
+				enemies.append(Boss(column*75,row*75)) 
 
 def LoadNextLevel(player): #loads future levels
 	global level
@@ -230,23 +233,27 @@ def gameLoop(dt,surface,screen,clock):
 		for enemy in enemies: #interactions with all enemies
 			enemy.update(dt,player) #updates enemies for movement/calculations
 			if enemy.type == "bat":
-				enemy.boxCollisions(dt,boxes)#collide with the terrain
+				enemy.boxCollisions(dt,boxes) #collide with the terrain and moves the bat enemy
 			if enemy.type == "shooter":
 				if enemy.updateProjectiles(dt,boxes,player) == "playerCollision":
-					if player.damagetime >=1300:
-						player.takeDamage()
-			if enemy.checkCollisions(player.rect) == True: #collisions with player
-				if player.damagetime >=1300: 
 					player.takeDamage()
-					if enemy.type != "sword" and enemy.type != "spike": 
-						enemies.remove(enemy)
-						break #enemies like bats die
+			if enemy.checkCollisions(player.rect) == True: #check enemy collisions with player 
+				player.takeDamage()
+				if enemy.type != "sword" and enemy.type != "spike" and enemy.type != "shooter": 
+					enemies.remove(enemy)
+					#enemies like bats die but not the sword, spike or shooter enemy
 			for attack in player.getAttacks(): #collisions with player attacks
-				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike": #player kills an enemy. adds 100 to score
+				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike" and enemy.type != "boss": #player kills an enemy. adds 10 to score
 					enemies.remove(enemy)
 					score += 10
 					if attack.type == "projectile":
 						player.removeAttack(attack)
+				if enemy.type == "boss":
+					if enemy.checkHeartCollisions(attack.rect):
+						player.removeAttack(attack)
+					if enemy.getHealth() == 0:
+						boxes.append(EndPoint(enemy.rect.centerx, 380))
+						enemies.remove(enemy)
 
 		for attack in player.getAttacks():#updates player attack for movement/removal
 			if attack.type == "projectile":
@@ -365,7 +372,7 @@ def menuLoop(dt,surface,screen,buttons,images,title):
 				createUser(textbox.value)
 
 	if clicked == "start": #BUTTON FUNCTIONS
-		levels = ["Level1.txt","Level2.txt","Level3.txt","Level4.txt"]
+		levels = ["Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt"]
 		level = 0
 		player = Player(100,100)
 		gameTime = 0
