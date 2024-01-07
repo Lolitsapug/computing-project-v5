@@ -189,8 +189,8 @@ def LoadNextLevel(player): #loads future levels
 	createMap(levels[level],player)
 	return False
 
-def gameLoop(dt,surface,screen,clock):	
-		global gameTime,done,score,coins
+def gameLoop(dt,surface,clock):	
+		global gameTime,score,coins
 
 		pygame.event.pump()
 		for events in pygame.event.get():#quit game event
@@ -302,11 +302,13 @@ def gameLoop(dt,surface,screen,clock):
 
 		return "game"
 
-def shopLoop(surface,screen,buttons):
+def shopLoop(surface,buttons):
+	global done
 	pygame.event.pump()
 	clicked = None
 	for events in pygame.event.get():
 		if events.type == pygame.QUIT:
+			done = True
 			pygame.quit()
 		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
 			pos = pygame.mouse.get_pos()
@@ -349,7 +351,7 @@ def shopLoop(surface,screen,buttons):
 
 	return "shop"
 
-def menuLoop(dt,surface,screen,buttons,images,title):
+def menuLoop(dt,surface,buttons,images,title):
 	global done,level,levels,player,gameTime,menuAnimation,custom
 	pygame.event.pump()
 	
@@ -357,6 +359,7 @@ def menuLoop(dt,surface,screen,buttons,images,title):
 	clicked = None
 	for events in pygame.event.get():
 		if events.type == pygame.QUIT:
+			done = True
 			pygame.quit()
 		if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
 			pos = pygame.mouse.get_pos()
@@ -409,7 +412,7 @@ def menuLoop(dt,surface,screen,buttons,images,title):
 	
 	return "menu"
 
-def deathLoop(screen,surface,buttons):
+def deathLoop(surface,buttons):
 	global done
 	pygame.event.pump()
 	clicked = None
@@ -459,7 +462,7 @@ def deathLoop(screen,surface,buttons):
 
 	return "gameOver"
 
-def leaderboardLoop(screen,surface):
+def leaderboardLoop(surface):
 	global done
 	pygame.event.pump()
 
@@ -538,15 +541,15 @@ def main():#initial game initialisation
 #----------------- MAIN GAME LOOP START----------------------------	
 	while done == False:
 		if loop == "game":
-			loop = gameLoop(dt,surface,screen,clock)
+			loop = gameLoop(dt,surface,clock)
 		elif loop == "shop":
-			loop = shopLoop(surface,screen,shopbuttons)
+			loop = shopLoop(surface,shopbuttons)
 		elif loop == "menu":
-			loop = menuLoop(dt,surface,screen,menubuttons,images,title)
+			loop = menuLoop(dt,surface,menubuttons,images,title)
 		elif loop == "gameOver":
-			loop = deathLoop(screen,surface,deathbuttons)
+			loop = deathLoop(surface,deathbuttons)
 		elif loop == "leaderboard":
-			loop = leaderboardLoop(screen,surface)
+			loop = leaderboardLoop(surface)
 
 		scaledSurface = pygame.transform.scale(surface, (1280, 720))  # screen scaling
 		screen.blit(scaledSurface, (0, 0))
