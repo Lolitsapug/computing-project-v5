@@ -37,7 +37,6 @@ class Boss(Enemy):
                 if self.state <= 1:
                     self.phase = random.randint(3,5)
                     self.state += random.randint(1,2) #randomly chooses to do 2 attack phases or 1 attack phase
-                    self.phase = 3
                 elif self.state >= 2:
                     self.phase = random.randint(1,2) 
                     self.state = 0
@@ -53,7 +52,7 @@ class Boss(Enemy):
                 if self.phase == 2:
                     self.spawnHearts(True) #spawns static hearts
                 self.time += 1 #to make sure spawning cannot happen twice
-                player.ammo = 100 #player has enough ammo to shoot the hearts
+                player.ammo = 10 #player has enough ammo to shoot the hearts
             else:
                 if self.time < 5000:
                     for heart in self.projectiles:

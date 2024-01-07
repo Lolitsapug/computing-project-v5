@@ -121,7 +121,7 @@ def insertData():
 	if userID != None and not custom:
 		connection = sqlite3.connect('Database.db')
 		cursor = connection.cursor()
-		rec = (userID, gameTime//1000, score, level+1)
+		rec = (userID, gameTime//1000, score, level)
 		sql = '''
 			INSERT INTO Leaderboard (userID, Time, Score, Level) VALUES (?, ?, ?, ?)
 			'''
@@ -190,7 +190,7 @@ def LoadNextLevel(player): #loads future levels
 	return False
 
 def gameLoop(dt,surface,clock):	
-		global gameTime,score,coins
+		global gameTime,done, score,coins
 
 		pygame.event.pump()
 		for events in pygame.event.get():#quit game event

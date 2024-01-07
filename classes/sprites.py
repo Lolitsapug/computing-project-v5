@@ -21,5 +21,4 @@ def adjustOffset(offset): #changes the camera offset to the players
 	cameraOffset = offset
 
 def getOffset(): #returns camera offset for drawing
-	global cameraOffset
 	return cameraOffset
