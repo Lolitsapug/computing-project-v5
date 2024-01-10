@@ -52,7 +52,7 @@ class Boss(Enemy):
                 if self.phase == 2:
                     self.spawnHearts(True) #spawns static hearts
                 self.time += 1 #to make sure spawning cannot happen twice
-                player.ammo = 10 #player has enough ammo to shoot the hearts
+                player.ammo = 5 #player has enough ammo to shoot the hearts
             else:
                 if self.time < 5000:
                     for heart in self.projectiles:
