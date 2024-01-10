@@ -227,7 +227,7 @@ def gameLoop(dt,surface,clock):
 			for box in boxes:
 				if box.type == "shop":
 					box.animationIndex = 0
-		else:
+		else:  # touching a shop
 			IDs[1].animationIndex = 1
 
 		for enemy in enemies: #interactions with all enemies
