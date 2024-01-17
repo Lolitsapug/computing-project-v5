@@ -25,7 +25,7 @@ coins = []
 gameTime = 0 #game timer (miliseconds)
 score = 0
 level = 0 #indicates what level to load
-levels = ["Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
+levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
 menuAnimation = 0
 
 userID = None

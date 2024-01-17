@@ -28,22 +28,22 @@ Heart = pygame.image.load("menuImages/Heart.png")
 class Player(Sprite):
 	def __init__(self, startx, starty):
 		super().__init__(idle+run+damage+jump+attack+death, startx, starty,"player")
-		self.xVel = 0.001
+		self.xVel = 0.001 
 		self.yVel = 0
-		self.xMaxSpeed = 0.29
-		self.yMaxSpeed = 0.40
-		self.grounded = True
-		self.right = True
+		self.xMaxSpeed = 0.29 #limit for maximum horizontal speed
+		self.yMaxSpeed = 0.40 #limit for maximum vertical speed
+		self.grounded = True #checks if player is touching the floor
+		self.right = True #current facing direction
 		self.dead = False
 		self.health = 5
-		self.damagetime = 2000
-		self.attacks = []
+		self.damagetime = 2000 #timer for immunity frames and attacks
+		self.attacks = [] #stores the player's attacks
 		self.toggleArc = 0 #toggles preview arc
 		self.past = 1000 #cooldown for attacking
 		self.currentAnim = None
-		self.range = [0,0]
-		self.loop = False
-		self.playing = False
+		self.range = [0,0] #range for animation frames in the list
+		self.loop = False #whether an animation is looping
+		self.playing = False #whether an animation is playing
 		self.ammo = 5
 		self.money = 0
 		self.touchingShop = False
@@ -185,7 +185,7 @@ class Player(Sprite):
 						self.right = True
 				if key[pygame.K_UP] or key[pygame.K_w]:
 					if self.grounded == True:
-						self.yVel = jumpForce 
+						self.yVel = jumpForce #adds vertical velocity upwards
 						jump = True #calls for jump animation
 						self.grounded = False
 				if key[pygame.K_DOWN]: #debug & testing
