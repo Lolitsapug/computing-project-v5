@@ -25,7 +25,7 @@ coins = []
 gameTime = 0 #game timer (miliseconds)
 score = 0
 level = 0 #indicates what level to load
-levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt"] #prebuilt game levels
+levels = [] #stores game level text file names
 menuAnimation = 0
 
 userID = None
@@ -377,7 +377,7 @@ def menuLoop(dt,surface,buttons,images,title):
 				createUser(textbox.value)
 
 	if clicked == "start": #BUTTON FUNCTIONS
-		levels = ["Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt"]
+		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt"]
 		level = 0
 		player = Player(100,100)
 		gameTime = 0
