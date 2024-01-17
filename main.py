@@ -227,7 +227,7 @@ def gameLoop(dt,surface,clock):
 			for box in boxes:
 				if box.type == "shop":
 					box.animationIndex = 0
-		else:
+		else:  # touching a shop
 			IDs[1].animationIndex = 1
 
 		for enemy in enemies: #interactions with all enemies
@@ -241,6 +241,7 @@ def gameLoop(dt,surface,clock):
 				player.takeDamage()
 				if enemy.type != "sword" and enemy.type != "spike" and enemy.type != "shooter": 
 					enemies.remove(enemy)
+					break
 					#enemies like bats die but not the sword, spike or shooter enemy
 			for attack in player.getAttacks(): #collisions with player attacks
 				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike" and enemy.type != "boss": #player kills an enemy. adds 10 to score
@@ -248,6 +249,7 @@ def gameLoop(dt,surface,clock):
 					score += 10
 					if attack.type == "projectile":
 						player.removeAttack(attack)
+					break
 				if enemy.type == "boss":
 					if enemy.checkHeartCollisions(attack.rect):
 						player.removeAttack(attack)
@@ -510,7 +512,7 @@ def main():#initial game initialisation
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
 	dt = 0 #Time between each frame Delta Time
-	player = Player(100, 100) 
+	player = Player(500, 100)
 
 	menubuttons = { 
 		"start":[pygame.image.load("menuImages/PLAYbutton.png"),pygame.Rect(160,250,250,100)],
