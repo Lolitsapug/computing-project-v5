@@ -29,6 +29,7 @@ class Boss(Enemy):
         self.time = 0
         self.phaseRepeat = 0 
         self.check = False
+        self.spikeRepeat = False
 
     def update(self,dt,player):
         self.time += dt
