@@ -197,7 +197,7 @@ def gameLoop(dt,surface,clock):
 			if events.type == pygame.QUIT:
 				done = True
 				pygame.quit() 
-			if player.dead == True and events.type == pygame.KEYDOWN: #redirect to deathloop
+			if player.dead == True and pygame.key.get_pressed()[pygame.K_RETURN]: #redirect to deathloop when enter key pressed
 				return "gameOver"
 	#----------------- GAME LOGIC START--------------------------------
 		if player.dead == False:
