@@ -10,7 +10,7 @@ attackrange = [27,30]
 deathrange = [32,37]
 
 #self.images = [pygame.image.load(image) for image in images]
-
+#lists of image files
 idle = ["animations/idle/idle(1).png", "animations/idle/idle(2).png", "animations/idle/idle(3).png", "animations/idle/idle(4).png", "animations/idle/idle(5).png", "animations/idle/idle(6).png", "animations/idle/idle(6).png"]
 run = ["animations/run/run(1).png","animations/run/run(2).png","animations/run/run(3).png","animations/run/run(4).png","animations/run/run(5).png","animations/run/run(6).png","animations/run/run(7).png","animations/run/run(8).png","animations/run/run(8).png"]
 damage = ["animations/damage.png","animations/damage.png"]
@@ -27,6 +27,7 @@ Heart = pygame.image.load("menuImages/Heart.png")
 
 class Player(Sprite):
 	def __init__(self, startx, starty):
+		#image lists are appended together into 1 large list
 		super().__init__(idle+run+damage+jump+attack+death, startx, starty,"player")
 		self.xVel = 0.001 
 		self.yVel = 0
@@ -105,34 +106,23 @@ class Player(Sprite):
 					end = True
 				elif temprect.colliderect(box.rect) and box.type == "ground":
 					if self.xVel != 0: #checking player x collisions
-						if box.rect.left < temprect.right and box.rect.left > self.rect.centerx: 
+						if box.rect.left < temprect.right and box.rect.left > self.rect.centerx and self.xVel > 0: 
 							temprect.right = box.rect.left #player moving right collision
 							right = True
-						elif box.rect.right > temprect.left and box.rect.right < self.rect.centerx:
+						elif box.rect.right > temprect.left and box.rect.right < self.rect.centerx and self.xVel < 0:
 							temprect.left = box.rect.right+1 #player moving left collision
 							left = True	
 					if self.yVel != 0: #checking player y collisions
-						if box.rect.top < temprect.bottom and box.rect.top > self.rect.top:					
+						if box.rect.top < temprect.bottom and box.rect.top > self.rect.top and self.yVel > 0:					
 							temprect.bottom = box.rect.top #player bottom collision
 							self.grounded = True 
 							bottom = True
-						elif box.rect.bottom > temprect.top and box.rect.bottom < self.rect.bottom:
+						elif box.rect.bottom > temprect.top and box.rect.bottom < self.rect.bottom and self.yVel < 0:
 							temprect.top = box.rect.bottom #player top collision	
 							top = True
 
 					corner = False 
-					if self.yVel <0: #jumping corner collisions
-						if right and bottom:
-							temprect.right = box.rect.left-1
-							temprect.y = self.rect.y+self.yVel
-							corner = True
-							self.yVel = -0.19
-						elif left and bottom:
-							temprect.left = box.rect.right+1
-							temprect.y = self.rect.y+self.yVel
-							corner = True
-							self.yVel = -0.19
-					elif self.yVel >0: #falling corner collisions
+					if self.yVel >0: #falling corner collisions
 						if right and bottom:
 							temprect.right = box.rect.left-1
 							temprect.y = self.rect.y+self.yVel
@@ -161,6 +151,7 @@ class Player(Sprite):
 				self.touchingShop = False
 
 			self.move(dt)
+			
 		return [end,check]
 
 	def update(self,dt,clock,screen):
@@ -273,13 +264,13 @@ class Player(Sprite):
 				self.loop = False
 				self.playing = True
 
-		if self.dead == True and self.currentAnim != "dead":
+		if self.dead == True and self.currentAnim != "dead": #player death animation
 			self.currentAnim = "dead"
 			self.range = deathrange
 			self.animationIndex = self.range[0]*15
 			self.loop = False
 			self.playing = True
-
+ 
 	def slash(self,static):
 		if self.past>=1500: #slash cooldown
 			self.past = 0

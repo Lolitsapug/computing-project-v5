@@ -197,7 +197,7 @@ def gameLoop(dt,surface,clock):
 			if events.type == pygame.QUIT:
 				done = True
 				pygame.quit() 
-			if player.dead == True and pygame.key.get_pressed()[pygame.K_RETURN]: #redirect to deathloop
+			if player.dead == True and pygame.key.get_pressed()[pygame.K_RETURN]: #redirect to deathloop when enter key pressed
 				return "gameOver"
 	#----------------- GAME LOGIC START--------------------------------
 		if player.dead == False:
@@ -280,7 +280,7 @@ def gameLoop(dt,surface,clock):
 			GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//3
 			surface.blit(GameOver,GameOverRect)
 
-			inputText = fonts[2].render("Press enter to continue",True,(255,255,255))
+			inputText = fonts[2].render("Press any button to continue",True,(255,255,255))
 			inputTextRect = inputText.get_rect()
 			inputTextRect.centerx,inputTextRect.top = WIDTH//2,GameOverRect.bottom + 5
 			surface.blit(inputText,inputTextRect)
