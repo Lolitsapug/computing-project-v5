@@ -5,6 +5,7 @@ from classes.enemies import Sword, Bat, Shooter,Spike
 from classes.coin import Coin
 from classes.textbox import Text
 from classes.boss import Boss
+from classes.sprites import getOffset
 
 print("\n\u001b[31;1mTO COMMIT ON GITHUB ON PYCHARM \nTOP BAR - GIT - COMMIT \nTHEN GIT - PUSH - SELECT COMMITS\n\u001b[0m")
 
@@ -31,7 +32,22 @@ menuAnimation = 0
 userID = None
 textbox = Text(10,40)
 
-fonts = [pygame.font.SysFont('freesanbold.ttf', 60),pygame.font.SysFont('freesanbold.ttf', 50),pygame.font.SysFont('freesanbold.ttf', 40),pygame.font.Font("robotoMono.ttf", 25)]
+#game fonts to be loaded
+fonts = [pygame.font.Font('PixeloidSansBold.ttf', 35),pygame.font.Font('PixeloidMono.ttf', 30),pygame.font.Font('PixeloidMono.ttf', 25),pygame.font.Font("robotoMono.ttf", 25),pygame.font.Font('PixeloidMono.ttf', 20)]
+#tutorial text
+def tutorialText(screen):
+	offset = getOffset()
+	tutorial1 = [fonts[4].render(str("Press A and D or < and > arrow keys"),True,(255,255,255)),fonts[4].render(str("to move left and right"),True,(255,255,255))]
+	tutorial2 = fonts[4].render(str("Press W or ^ arrow to jump"),True,(255,255,255))
+	tutorial3 = [fonts[4].render(str("Left mouse button for a sliding attack"),True,(255,255,255)),fonts[4].render(str("Right mouse button for a static attack"),True,(255,255,255))]
+	tutorial4 = fonts[4].render(str("Press 1 and 2 keys to toggle\n projectile prediction arc"),True,(255,255,0))
+	tutorial5 = fonts[4].render(str("Press space to fire a projectile"),True,(255,255,255))
+
+	screen.blit(tutorial1[0],(400-offset,200)),screen.blit(tutorial1[1],(455-offset,250))
+	screen.blit(tutorial2,(1150-offset, 200))
+	screen.blit(tutorial3[0],(2000-offset, 200)),screen.blit(tutorial3[1],(2000-offset, 250))
+	screen.blit(tutorial4,(2700, 200))
+	screen.blit(tutorial5,(3500, 200))
 
 def createTables():
 	connection = sqlite3.connect('Database.db')
@@ -159,7 +175,9 @@ def createMap(fileName,player):
 				boxes.append(Sky(column*75, row*75)) #background sky for all sprites
 
 			if map[row][column] == "/":#sword skeleton
-				enemies.append(Sword((column*75)+16, (row*75)+18)) #+29 for height correction
+				enemies.append(Sword((column*75)+16, (row*75)+18, False)) #+29 for height correction
+			elif map[row][column] == "?":#static skeleton tutorial phase
+				enemies.append(Sword((column*75)+16, (row*75)+18, True))
 			elif map[row][column] == ">":#bat
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
 			elif map[row][column] == "+":#shooter
@@ -200,19 +218,22 @@ def gameLoop(dt,surface,clock):
 			if player.dead == True and pygame.key.get_pressed()[pygame.K_RETURN]: #redirect to deathloop when enter key pressed
 				return "gameOver"
 	#----------------- GAME LOGIC START--------------------------------
+
 		if player.dead == False:
 			gameTime += clock.get_time()
 		#onscreen text statistics
-		timeText,scoreText,ammoText,moneyText = fonts[1].render(str(gameTime//1000),True,(0,255,0)),fonts[2].render(str(f"score:{score}"),True,(255,255,0)),fonts[2].render(f"ammo:{player.ammo}",True,(255,255,0)),fonts[2].render(f"coins:{player.money}",True,(255,255,0))
+		timeText,scoreText,ammoText,moneyText = fonts[1].render(str(gameTime//1000),True,(0,255,0)),fonts[2].render(str(f"score:{score}"),True,(255,255,0)),fonts[2].render(f"ammo :{player.ammo}",True,(255,255,0)),fonts[2].render(f"coins:{player.money}",True,(255,255,0))
 		timeRect,scoreRect,ammoRect,moneyRect = timeText.get_rect(),scoreText.get_rect(),ammoText.get_rect(),moneyText.get_rect()
 		timeRect.right,timeRect.y = WIDTH-10,10
 		scoreRect.x,scoreRect.y = 15,105
 		ammoRect.x,ammoRect.y = 15,45
 		moneyRect.x,moneyRect.y = 15,75
-	
+
+		#draws background boxes so they dont cover the projectile arc.
 		surface.fill(BACKGROUND)
 		for box in boxes:
-			box.draw(surface) #draws background so it doesnt cover up projectile arc
+			if box.type == "sky":
+				box.draw(surface)
 
 		if player.update(dt,clock,surface):
 			return "shop"
@@ -286,6 +307,10 @@ def gameLoop(dt,surface,clock):
 			surface.blit(inputText,inputTextRect)
 
 	#----------------- DRAWING START-----------------------------------
+		for box in boxes:
+			if box.type != "sky":
+				box.draw(surface)
+
 		for enemy in enemies:
 			enemy.draw(surface)
 
@@ -301,6 +326,9 @@ def gameLoop(dt,surface,clock):
 		surface.blit(scoreText,scoreRect) #score top left
 		surface.blit(ammoText,ammoRect) #ammo top left
 		surface.blit(moneyText,moneyRect) #money top left
+
+		if level == 0:
+			tutorialText(surface)
 
 		return "game"
 

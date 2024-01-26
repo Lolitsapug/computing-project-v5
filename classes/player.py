@@ -187,7 +187,7 @@ class Player(Sprite):
 				if key[pygame.K_2]:
 					self.toggleArc = 1 #turn on arc
 				if key[pygame.K_SPACE]:	
-					if self.past>=900: #projectile attack only when selected
+					if self.past>=900 and self.toggleArc == 1: #projectile attack only when selected
 						self.past = 650
 						self.projectileArc(screen,True)
 

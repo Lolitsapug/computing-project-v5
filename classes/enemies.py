@@ -22,10 +22,13 @@ class Enemy(Sprite):
 			self.animationIndex = 0
 		
 class Sword(Enemy):
-	def __init__(self, startx , starty):
+	def __init__(self, startx , starty, static):
 		images = ["animations/sword/run1.png","animations/sword/run2.png","animations/sword/run3.png","animations/sword/run4.png","animations/sword/run5.png"]
 		super().__init__(images, startx, starty,"sword")
-		self.speed = -0.1
+		if static:
+			self.speed = 0
+		else:
+			self.speed = -0.1
 		self.distance = 150
 		self.startx = startx
 	
