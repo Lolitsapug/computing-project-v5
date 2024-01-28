@@ -25,5 +25,5 @@ Enemies:
 
 Extra info:
 
-7 visible tiles from left and right side of each level
-- Leave 7 grass tiles aside each invisible side wall for "infinite" land effect.
+7 visible tiles at the left and 14 visible tiles to the right
+- Leave extra tiles aside each invisible side wall for "infinite" land effect.

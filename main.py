@@ -45,7 +45,7 @@ def tutorialText(screen):
 
 	screen.blit(tutorial1[0],(400-offset,200)),screen.blit(tutorial1[1],(455-offset,250))
 	screen.blit(tutorial2,(1150-offset, 200))
-	screen.blit(tutorial3[0],(2020-offset, 200)),screen.blit(tutorial3[1],(2000-offset, 250))
+	screen.blit(tutorial3[0],(2020-offset, 200)),screen.blit(tutorial3[1],(2020-offset, 250))
 	screen.blit(tutorial4[0],(2820-offset, 200)),screen.blit(tutorial4[1],(2875-offset, 250))
 	screen.blit(tutorial5,(3550-offset, 200))
 
@@ -299,17 +299,6 @@ def gameLoop(dt,surface,clock):
 			else:
 				coin.animation(dt)
 
-		if player.dead == True: #gameover screen - redirects to deathLoop()
-			GameOver = fonts[1].render("Game Over",True,(255,255,255))
-			GameOverRect = GameOver.get_rect()
-			GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//3
-			surface.blit(GameOver,GameOverRect)
-
-			inputText = fonts[2].render("Press enter key to continue",True,(255,255,255))
-			inputTextRect = inputText.get_rect()
-			inputTextRect.centerx,inputTextRect.top = WIDTH//2,GameOverRect.bottom + 5
-			surface.blit(inputText,inputTextRect)
-
 	#----------------- DRAWING START-----------------------------------
 		for box in boxes:
 			if box.type != "sky":
@@ -333,6 +322,17 @@ def gameLoop(dt,surface,clock):
 
 		if level == 0:
 			tutorialText(surface)
+
+		if player.dead == True: #gameover screen - redirects to deathLoop()
+			GameOver = fonts[1].render("Game Over",True,(255,255,255))
+			GameOverRect = GameOver.get_rect()
+			GameOverRect.centerx,GameOverRect.centery = WIDTH//2,HEIGHT//3
+			surface.blit(GameOver,GameOverRect)
+
+			inputText = fonts[2].render("Press enter key to continue",True,(255,255,255))
+			inputTextRect = inputText.get_rect()
+			inputTextRect.centerx,inputTextRect.top = WIDTH//2,GameOverRect.bottom + 5
+			surface.blit(inputText,inputTextRect)
 
 		return "game"
 
