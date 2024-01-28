@@ -40,14 +40,14 @@ def tutorialText(screen):
 	tutorial1 = [fonts[4].render(str("Press A and D or < and > arrow keys"),True,(255,255,255)),fonts[4].render(str("to move left and right"),True,(255,255,255))]
 	tutorial2 = fonts[4].render(str("Press W or ^ arrow to jump"),True,(255,255,255))
 	tutorial3 = [fonts[4].render(str("Left mouse button for a sliding attack"),True,(255,255,255)),fonts[4].render(str("Right mouse button for a static attack"),True,(255,255,255))]
-	tutorial4 = fonts[4].render(str("Press 1 and 2 keys to toggle\n projectile prediction arc"),True,(255,255,0))
-	tutorial5 = fonts[4].render(str("Press space to fire a projectile"),True,(255,255,255))
+	tutorial4 = [fonts[4].render(str("Press 1 and 2 keys to toggle projectiles"),True,(255,255,255)),fonts[4].render(str("Space to fire a projectile"),True,(255,255,255))]
+	tutorial5 = fonts[4].render(str("The flag takes you to the next level"),True,(255,255,255))
 
 	screen.blit(tutorial1[0],(400-offset,200)),screen.blit(tutorial1[1],(455-offset,250))
 	screen.blit(tutorial2,(1150-offset, 200))
-	screen.blit(tutorial3[0],(2000-offset, 200)),screen.blit(tutorial3[1],(2000-offset, 250))
-	screen.blit(tutorial4,(2700, 200))
-	screen.blit(tutorial5,(3500, 200))
+	screen.blit(tutorial3[0],(2020-offset, 200)),screen.blit(tutorial3[1],(2000-offset, 250))
+	screen.blit(tutorial4[0],(2820-offset, 200)),screen.blit(tutorial4[1],(2875-offset, 250))
+	screen.blit(tutorial5,(3550-offset, 200))
 
 def createTables():
 	connection = sqlite3.connect('Database.db')
@@ -175,9 +175,9 @@ def createMap(fileName,player):
 				boxes.append(Sky(column*75, row*75)) #background sky for all sprites
 
 			if map[row][column] == "/":#sword skeleton
-				enemies.append(Sword((column*75)+16, (row*75)+18, False)) #+29 for height correction
+				enemies.append(Sword((column*75)+5, (row*75)+18, False)) #+29 for height correction
 			elif map[row][column] == "?":#static skeleton tutorial phase
-				enemies.append(Sword((column*75)+16, (row*75)+18, True))
+				enemies.append(Sword((column*75)+5, (row*75)+18, True))
 			elif map[row][column] == ">":#bat
 				enemies.append(Bat((column*75+5), (row*75)+5)) 
 			elif map[row][column] == "+":#shooter
@@ -202,6 +202,10 @@ def LoadNextLevel(player): #loads future levels
 	player.attacks = []
 	player.xVel,player.yVel,player.grounded = 0.00001,0,True #resets player values, v != 0 to reset cameraoffset
 	level += 1 #increments level by 1
+
+	if level == 1: #resets health and ammo after tutorial
+		player.health,player.ammo = 5,5
+
 	if level >= len(levels):
 		return True
 	createMap(levels[level],player)
@@ -405,7 +409,7 @@ def menuLoop(dt,surface,buttons,images,title):
 				createUser(textbox.value)
 
 	if clicked == "start": #BUTTON FUNCTIONS
-		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt"]
+		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt","Level6.txt"]
 		level = 0
 		player = Player(100,100)
 		gameTime = 0
