@@ -301,13 +301,15 @@ class Player(Sprite):
 			yDirection = 1
 		if abs(pY-mY) != 0: #angles from player to the mouse
 			angle = math.atan(abs(mX-pX)/abs(pY-mY))
-			projYVel = projectileVel * math.cos(angle)*yDirection #trigonometry using angle for the x and y speed so magnitude is always the same
+			#trigonometry using angle for the x and y speed so magnitude is always the same
+			projYVel = projectileVel * math.cos(angle)*yDirection 
 			projXVel = projectileVel * math.sin(angle)*xDirection
 			for i in range(10): #prediction arc for attack
 				xS = pX + projXVel * i*30 #SUVAT using the angle to calculate predicted position
 				yS = pY + projYVel * i*30 + 0.5*0.0007*(i*30)**2
 				if self.toggleArc == 1:
 					pygame.draw.rect(screen,(255,0,0),pygame.Rect(xS, yS, 5, 5),  2)
+					
 			if fireProjectile == True: #spawns projectile
 				if self.ammo > 0: #player must have ammo to spawn a projectile
 					self.attacks.append(Projectile(self.rect.centerx, self.rect.centery, projXVel, projYVel))

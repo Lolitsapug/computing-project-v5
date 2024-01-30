@@ -257,9 +257,9 @@ def gameLoop(dt,surface,clock):
 
 		for enemy in enemies: #interactions with all enemies
 			enemy.update(dt,player) #updates enemies for movement/calculations
-			if enemy.type == "bat":
-				enemy.boxCollisions(dt,boxes) #collide with the terrain and moves the bat enemy
-			if enemy.type == "shooter":
+			if enemy.type == "bat": #collide with the terrain and moves the bat enemy
+				enemy.boxCollisions(dt,boxes) 
+			if enemy.type == "shooter": #update and check collisions with shooter
 				if enemy.updateProjectiles(dt,boxes,player) == "playerCollision":
 					player.takeDamage()
 			if enemy.checkCollisions(player.rect) == True: #check enemy collisions with player 
@@ -269,7 +269,8 @@ def gameLoop(dt,surface,clock):
 					break
 					#enemies like bats die but not the sword, spike or shooter enemy
 			for attack in player.getAttacks(): #collisions with player attacks
-				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike" and enemy.type != "boss": #player kills an enemy. adds 10 to score
+				if enemy.checkCollisions(attack.rect) == True and enemy.type != "spike" and enemy.type != "boss": 
+					#player kills an enemy. adds 10 to score
 					enemies.remove(enemy)
 					score += 10
 					if attack.type == "projectile":
@@ -277,9 +278,9 @@ def gameLoop(dt,surface,clock):
 					break
 				if enemy.type == "boss":
 					if enemy.checkHeartCollisions(attack.rect):
-						player.removeAttack(attack)
+						player.removeAttack(attack) #player attack collisions with the boss hearts
 					if enemy.getHealth() == 0:
-						boxes.append(EndPoint(enemy.rect.centerx, 380))
+						boxes.append(EndPoint(enemy.rect.centerx, 380)) #boss flag for next level
 						enemies.remove(enemy)
 
 		for attack in player.getAttacks():#updates player attack for movement/removal
