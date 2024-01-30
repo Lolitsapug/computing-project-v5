@@ -16,6 +16,7 @@ class Boss(Enemy):
         self.waveHeight = 0
         self.check = False
         self.spikeRepeat = False
+        self.direction = "L"
 
     def checkCollisions(self, rect):
         return False
@@ -127,12 +128,22 @@ class Boss(Enemy):
             elif self.time < 5000:
                 if self.time < 2000 and self.time > 1000 and self.phaseRepeat == 1:
                     if self.check == False:
-                        self.rect.x += random.randint (50,150)
+                        self.direction = random.choice(["L","R"])
+                        if self.direction =="R":
+                            self.rect.x += random.randint(50,150)
+                            self.direction = "L"
+                        elif self.direction == "L":
+                            self.rect.x -= random.randint(50,150)
+                            self.direction = "R"
                         self.spawnProjectiles()
                         self.check = True
                 elif self.time < 3000 and self.time > 2000 and self.phaseRepeat == 1:
                     if self.check == True:
-                        self.rect.x -= random.randint (100,200)
+                        if self.direction =="R":
+                            self.rect.x += random.randint(50,150)
+                        elif self.direction == "L":
+                            self.rect.x -= random.randint(50,150)
+                        self.rect.x += random.randint(*random.choice([(-200,-100),(100,200)]))
                         self.spawnProjectiles()
                         self.check = False
 
@@ -150,14 +161,13 @@ class Boss(Enemy):
                 else:
                     self.resetPhase()
 
-
     def draw(self,screen):
         cameraOffset = getOffset()
         screen.blit(self.images[round(self.animationIndex//15)], (self.rect.x-cameraOffset, self.rect.y))
+           
+        self.drawProjectiles(screen)
         
         self.drawHealthBar(screen,cameraOffset)
-        
-        self.drawProjectiles(screen)
 
     def drawHealthBar(self,screen,cameraOffset):
         for i in range(self.health):
@@ -241,7 +251,7 @@ class Beam(Enemy):
 
 class bossProjectile(Enemy):
     def __init__(self, startx , starty, xvel,yvel):
-        super().__init__(["sprites/rock.png"], startx, starty,"bossProjectile")
+        super().__init__(["sprites/bossrock.png"], startx, starty,"bossProjectile")
         self.xVel = xvel/4
         self.yVel = yvel/4
     

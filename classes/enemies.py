@@ -124,7 +124,7 @@ class Shooter(Enemy):
 			self.direction = "Left"
 		elif player.rect.x > self.rect.x:
 			self.direction = "Right"
-		if distance <= self.range and self.cooldown >= 2000:
+		if distance <= self.range and self.cooldown >= 2500:
 			self.cooldown = 0
 			self.fire = True
 

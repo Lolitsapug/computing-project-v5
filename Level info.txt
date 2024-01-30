@@ -6,7 +6,7 @@
 Objects:
 = , Top Grass
 - , Dirt
-. , Sky background
+. , Sky background (also spaces and unset characters)
 X , invisible wall
 # , end flag
 0 , coin

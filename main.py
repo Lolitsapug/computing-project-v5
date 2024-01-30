@@ -43,11 +43,11 @@ def tutorialText(screen):
 	tutorial4 = [fonts[4].render(str("Press 1 and 2 keys to toggle projectiles"),True,(255,255,255)),fonts[4].render(str("Space to fire a projectile"),True,(255,255,255))]
 	tutorial5 = fonts[4].render(str("The flag takes you to the next level"),True,(255,255,255))
 
-	screen.blit(tutorial1[0],(400-offset,200)),screen.blit(tutorial1[1],(455-offset,250))
-	screen.blit(tutorial2,(1150-offset, 200))
-	screen.blit(tutorial3[0],(2020-offset, 200)),screen.blit(tutorial3[1],(2020-offset, 250))
-	screen.blit(tutorial4[0],(2820-offset, 200)),screen.blit(tutorial4[1],(2875-offset, 250))
-	screen.blit(tutorial5,(3550-offset, 200))
+	screen.blit(tutorial1[0],(850-offset,200)),screen.blit(tutorial1[1],(905-offset,250))
+	screen.blit(tutorial2,(1600-offset, 200))
+	screen.blit(tutorial3[0],(2470-offset, 200)),screen.blit(tutorial3[1],(2470-offset, 250))
+	screen.blit(tutorial4[0],(3270-offset, 200)),screen.blit(tutorial4[1],(3325-offset, 250))
+	screen.blit(tutorial5,(4000-offset, 200))
 
 def createTables():
 	connection = sqlite3.connect('Database.db')
@@ -200,7 +200,8 @@ def LoadNextLevel(player): #loads future levels
 	print("starting next level")
 	pygame.display.flip()
 	player.attacks = []
-	player.xVel,player.yVel,player.grounded = 0.00001,0,True #resets player values, v != 0 to reset cameraoffset
+	player.xVel,player.yVel,player.grounded = 0.00001,0,True 
+	#resets player values, v != 0 to reset cameraoffset
 	level += 1 #increments level by 1
 
 	if level == 1: #resets health and ammo after tutorial
