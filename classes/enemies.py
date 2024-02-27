@@ -143,28 +143,25 @@ class Shooter(Enemy):
 			self.projectiles.append(enemyProjectile(self.rect.centerx, self.rect.centery+5+random.randint(-5,5), -0.15))
 	
 	def animation(self,dt):
-		if self.playing:
-			self.animationIndex = self.animationIndex+0.1*dt #increments the animation
-			if self.animationIndex >= (self.animRange[1]+1)*15:
-				self.animationIndex = self.animRange[0]*15
+		self.animationIndex = self.animationIndex+0.1*dt #increments the animation
+		if self.animationIndex >= (self.animRange[1]+1)*15:
+			self.animationIndex = self.animRange[0]*15
 
-
-		if self.cooldown <1500 and self.currentAnim != "shoot":
+		if self.cooldown <1500 and self.currentAnim != "shoot" and self.fire:
 			self.currentAnim = "shoot"
 			self.animRange = shootrange
 			self.animationIndex = self.animRange[0]*15
-			self.playing = True
 		
 		elif self.cooldown >=1500 and self.currentAnim != "idle":
 			self.currentAnim = "idle"
 			self.animRange = idlerange
 			self.animationIndex = self.animRange[0]*15
-			self.playing = True
 
 	def draw(self,screen):
 		cameraOffset = getOffset()
 		if self.direction == "Left":
-			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex//15)],True,False), (self.rect.x-cameraOffset, self.rect.y))
+			screen.blit(pygame.transform.flip(self.images[round(self.animationIndex//15)],True,False),\
+				(self.rect.x-cameraOffset, self.rect.y))
 		else:
 			screen.blit(self.images[round(self.animationIndex//15)], (self.rect.x-cameraOffset, self.rect.y))
 		
