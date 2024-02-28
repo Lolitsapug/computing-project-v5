@@ -230,9 +230,9 @@ class Heart(Enemy):
 		
     def update(self,dt):
         if not self.static:
-            self.angle += self.omega * dt/100 #increasing the angle fro centre
-            self.rect.x = self.startx + self.radius * math.cos(self.angle + ((math.pi/2)))  # increasing angle by radians
-            self.rect.y = self.starty + self.radius * math.sin(self.angle + ((math.pi/2))) # 
+            self.angle += self.omega * dt/100 #increasing the angle from centre
+            self.rect.x = self.startx + self.radius * math.cos(self.angle)  # Gets the x and y from centre using trigonometry
+            self.rect.y = self.starty + self.radius * math.sin(self.angle)  # x + hcos(angle), y + hsin(angle)
 
     def draw(self, surface):
         cameraOffset = getOffset() #retrieves cameraoffset from player
