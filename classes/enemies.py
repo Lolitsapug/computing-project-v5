@@ -59,7 +59,6 @@ class Bat(Enemy):
 		super().__init__(images, startx, starty,"bat")
 		self.speed = 0.35
 		self.range = 350
-		self.startx = startx
 
 	def update(self,dt,player):
 		distance = math.hypot(player.rect.centerx-self.rect.centerx, self.rect.centery-player.rect.centery)
@@ -115,7 +114,6 @@ class Shooter(Enemy):
 		self.currentAnim = "idle"
 		self.animRange = idlerange
 		self.fire = False
-		self.playing = True
 
 	def update(self,dt,player):
 		self.cooldown += dt

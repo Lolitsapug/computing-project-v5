@@ -25,4 +25,4 @@ class Invisible(Sprite):
 
 class Shop(Sprite):
 	def __init__(self,startx,starty):
-		super().__init__(["sprites/shop.png","sprites/shop(2).png"],startx,starty,"shop") #invisible wall
+		super().__init__(["sprites/shop.png","sprites/shop(2).png"],startx,starty,"shop") 
