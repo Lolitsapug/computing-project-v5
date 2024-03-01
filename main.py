@@ -322,7 +322,7 @@ def gameLoop(dt,surface,clock):
 		surface.blit(ammoText,ammoRect) #ammo top left
 		surface.blit(moneyText,moneyRect) #money top left
 
-		if level == 0:
+		if level == 0 and not custom:
 			tutorialText(surface)
 
 		if player.dead == True: #gameover screen - redirects to deathLoop()
