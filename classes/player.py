@@ -179,9 +179,6 @@ class Player(Sprite):
 						self.yVel = jumpForce #adds vertical velocity upwards
 						jump = True #calls for jump animation
 						self.grounded = False
-				if key[pygame.K_DOWN]: #debug & testing
-					print("down")
-					self.dead = True
 				if key[pygame.K_1]:
 					self.toggleArc = 0 #turns off arc
 				if key[pygame.K_2]:

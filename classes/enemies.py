@@ -62,7 +62,7 @@ class Bat(Enemy):
 		self.startx = startx
 
 	def update(self,dt,player):
-		distance = math.hypot(player.rect.centerx-self.rect.centerx, self.rect.centery-player.rect.centery)
+		distance = math.sqrt((player.rect.centerx-self.rect.centerx)^2 + (self.rect.centery-player.rect.centery)^2)
 		if distance <= self.range:
 			self.calcVel(player) #gets distance and checks if player is close enough
 		else:
@@ -119,7 +119,7 @@ class Shooter(Enemy):
 
 	def update(self,dt,player):
 		self.cooldown += dt
-		distance = math.hypot(player.rect.centerx-self.rect.centerx, self.rect.centery-player.rect.centery)
+		distance = math.sqrt((player.rect.centerx-self.rect.centerx)^2 + (self.rect.centery-player.rect.centery)^2)
 		if player.rect.x < self.rect.x:
 			self.direction = "Left"
 		elif player.rect.x > self.rect.x:

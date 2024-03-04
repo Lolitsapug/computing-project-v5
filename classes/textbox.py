@@ -7,13 +7,14 @@ class Text():
         self.font = pygame.font.SysFont('freesanbold.ttf', 40)
         self.text = self.font.render(f"name:{self.value}",True,(255,255,0))
         self.rect.width = self.text.get_width() + 10
+        self.maxsize = 20
 
     
     def update(self,event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 self.value = self.value[:-1]
-            elif event.key != pygame.K_RETURN:
+            elif event.key != pygame.K_RETURN and len(self.value) <= self.maxsize:
                 self.value += event.unicode #grabs the unicode letter for the button pressed
 
             self.text = self.font.render(f"name:{self.value}",True,(255,255,0)) #re-renders new text and sets back to default colour (yellow)

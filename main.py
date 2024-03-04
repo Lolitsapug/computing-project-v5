@@ -28,6 +28,7 @@ score = 0
 level = 0 #indicates what level to load
 levels = [] #stores game level text file names
 menuAnimation = 0
+paused = False
 
 userID = None
 textbox = Text(10,40)
@@ -242,6 +243,7 @@ def gameLoop(dt,surface,clock):
 
 		if player.update(dt,clock,surface):
 			return "shop"
+
 		IDs = player.collisions(boxes,dt)
 
 		if IDs[0]:#if collision with end flag loads next level
@@ -388,7 +390,7 @@ def shopLoop(surface,buttons):
 	return "shop"
 
 def menuLoop(dt,surface,buttons,images,title):
-	global done,level,levels,player,gameTime,menuAnimation,custom
+	global done,level,levels,player,gameTime,menuAnimation,custom,paused
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -409,6 +411,15 @@ def menuLoop(dt,surface,buttons,images,title):
 			if events.key == pygame.K_RETURN and textbox.value != "":
 				textbox.setGreen()
 				createUser(textbox.value)
+			if events.key == pygame.K_m:
+				if not paused: #checks if music is not paused
+					pygame.mixer.music.pause() #pauses music
+					paused = True
+					print("paused")
+				elif paused: #checks if music is paused
+					pygame.mixer.music.unpause() #unpuases music
+					print("unpaused")
+					paused = False
 
 	if clicked == "start": #BUTTON FUNCTIONS
 		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt","Level6.txt"]
