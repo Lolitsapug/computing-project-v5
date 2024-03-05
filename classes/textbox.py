@@ -34,4 +34,5 @@ class Text():
     
     def setGreen(self):
         #sets text green for visual confirmation of user creation
-        self.text = self.font.render(f"name:{self.value}",True,(0,255,0)) 
+        self.text = self.font.render(f"name:{self.value}",True,(0,255,0))
+        

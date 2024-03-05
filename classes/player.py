@@ -207,11 +207,11 @@ class Player(Sprite):
 			
 		if self.xVel >0:
 			cameraOffset += 0.75*dt + self.xVel #adjusts cameraoffset smoothly for player moving left
-			if cameraOffset >= self.rect.x - 200: #player is 200 pixels from the left side of the screen
+			if cameraOffset >= self.rect.x - 200 or cameraOffset < self.rect.x - 600: #player is 200 pixels from the left side of the screen
 				cameraOffset = self.rect.x - 200
 		elif self.xVel <0:
 			cameraOffset -= 0.75*dt + self.xVel #player moving right
-			if cameraOffset <= self.rect.x - 500: #player is 500 pixels from the left side of the screen
+			if cameraOffset <= self.rect.x - 500 or cameraOffset > self.rect.x - 100: #player is 500 pixels from the left side of the screen
 				cameraOffset = self.rect.x - 500
 		adjustOffset(cameraOffset) #sends back cameraoffset to the sprites file
 		return interaction
