@@ -422,7 +422,7 @@ def menuLoop(dt,surface,buttons,images,title):
 					paused = False
 
 	if clicked == "start": #BUTTON FUNCTIONS
-		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt","Level6.txt"]
+		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt","Level6.txt","Level7.txt"]
 		level = 0
 		player = Player(100,100)
 		gameTime = 0

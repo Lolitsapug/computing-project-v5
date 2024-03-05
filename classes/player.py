@@ -342,16 +342,18 @@ class Projectile(Sprite):
 		self.gravity = 0.0007
 		self.xVel = xVel
 		self.yVel = yVel
+		self.distance = 0
 	
 	def update(self,dt,boxes):
 		self.yVel = self.yVel + self.gravity*dt #adds gravity. xvel stays constant
+		self.distance += self.yVel
 		self.move(dt)
 		return self.checkcollisions(boxes)
 	
 	def checkcollisions(self,boxes): #checks collisions with ground or walls
 		for box in boxes:
 			if box.type == "ground":
-				if self.rect.colliderect(box.rect):
+				if self.rect.colliderect(box.rect) or self.distance > 1000:
 					return "remove"
 	
 	def move(self,dt):
