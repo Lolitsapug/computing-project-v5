@@ -390,7 +390,7 @@ def shopLoop(surface,buttons):
 	return "shop"
 
 def menuLoop(dt,surface,buttons,images,title):
-	global done,level,levels,player,gameTime,menuAnimation,custom,paused
+	global done,level,levels,player,gameTime,menuAnimation,custom,paused,score
 	pygame.event.pump()
 	
 	#check for mouse button click
@@ -426,6 +426,7 @@ def menuLoop(dt,surface,buttons,images,title):
 		level = 0
 		player = Player(100,100)
 		gameTime = 0
+		score = 0
 		custom = False
 		createMap(levels[level],player)
 		return "game"
@@ -433,6 +434,7 @@ def menuLoop(dt,surface,buttons,images,title):
 		print("loading custom map")
 		levels = ["custom.txt"]
 		level = 0
+		score = 0
 		player = Player(100, 100)
 		gameTime = 0
 		createMap(levels[level],player)
