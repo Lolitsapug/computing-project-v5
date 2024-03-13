@@ -7,16 +7,16 @@ import pygame,math,random
 class Boss(Enemy):
     def __init__(self, startx,starty):
         super().__init__(["sprites/Golem.png"], startx, starty,"boss")
-        self.projectiles = []
-        self.time = 0
-        self.phase = 0
+        self.projectiles = [] #stores created objects
+        self.time = 0 #time since phase was reset
+        self.phase = 0 #current phase number
         self.health = 5
         self.phaseRepeat = 0
         self.state = 0 #when state is 0 the next phase is attack, when 1 the next phase is hearts
-        self.waveHeight = 0
-        self.check = False
+        self.waveHeight = 0 #y height of spawned spikes
+        self.check = False #check boolean used for multiple different funcitons
         self.spikeRepeat = False
-        self.direction = "L"
+        self.direction = "L" #direction that the boss moves
 
     def checkCollisions(self, rect):
         return False
@@ -59,7 +59,7 @@ class Boss(Enemy):
                 if self.time < 5000:
                     for heart in self.projectiles:
                         heart.update(dt)
-                if self.time > 5000: #10 seconds till phase automatically ends
+                if self.time > 5000: #5 seconds till phase automatically ends
                     self.resetPhase()
 
         if self.phase == 3: #death beams
@@ -85,19 +85,19 @@ class Boss(Enemy):
 
         if self.phase == 4: #spike wave
             if self.time < 1000:
-                if self.check == False:
+                if self.check == False:#used to store whether spikes have been spawned
                     self.check = True
-                    self.waveHeight = (player.rect.y//75)*75 +26
+                    self.waveHeight = (player.rect.centery//75)*75 +26
                     self.projectiles.append(Spike((self.rect.x+5),(self.waveHeight)))
                     self.projectiles.append(Spike((self.rect.x+55),(self.waveHeight)))
                     self.projectiles[0].images[0].set_alpha(128)
                     self.projectiles[1].images[0].set_alpha(128)
             elif self.time < 1500:
-                self.projectiles[0].images[0].set_alpha(128)
-                self.projectiles[1].images[0].set_alpha(128)
+                self.projectiles[0].images[0].set_alpha(255)
+                self.projectiles[1].images[0].set_alpha(255)
                 if self.projectiles[0].checkCollisions(player.rect) or self.projectiles[1].checkCollisions(player.rect):
                     player.takeDamage()
-                self.check = False
+                self.check = False #resets check to false before wave starts
             elif self.time <= 1700:
                 if self.check == False:
                     self.phaseRepeat += 1 
@@ -106,16 +106,17 @@ class Boss(Enemy):
                     self.projectiles.append(Spike((self.rect.x-45-self.phaseRepeat*50),(self.waveHeight)))
                     self.projectiles.append(Spike((self.rect.x+5+self.phaseRepeat*50),(self.waveHeight)))
                     self.projectiles.append(Spike((self.rect.x+55+self.phaseRepeat*50),(self.waveHeight)))
-                    self.check = True
+                    self.check = True #extra spikes spawned so check is set to true
                 for spike in self.projectiles:
                     if spike.checkCollisions(player.rect):
                         player.takeDamage()
             elif self.time >1700:
                 if self.phaseRepeat<15:
                     self.time = 1500
-                    self.check = False
+                    self.check = False #sets check to False so spikes can be spawned again
+                #repeats spike movement until they have moved 15 lots of 50 pixels away.
 
-                elif self.spikeRepeat == False:
+                elif self.spikeRepeat == False: #the attack fully repeats once
                     self.spikeRepeat = True
                     self.time = 1000
                     self.phaseRepeat = 0
@@ -195,7 +196,7 @@ class Boss(Enemy):
     def spawnBeams(self):
         #spawn beam at boss position
         self.projectiles.append(Beam(self.rect.centerx))
-        #use random to randomly spawn 2 beams to the left of the boss and 2 to the right within ranges
+        #use random to randomly spawn 4 beams to the left of the boss and 4 to the right within ranges
         self.projectiles.append(Beam(self.rect.left-random.randint(10,190)))
         self.projectiles.append(Beam(self.rect.left-random.randint(210,340)))
         self.projectiles.append(Beam(self.rect.left-random.randint(360,540)))
@@ -231,8 +232,8 @@ class Heart(Enemy):
     def update(self,dt):
         if not self.static:
             self.angle += self.omega * dt/100 #increasing the angle from centre
-            self.rect.x = self.startx + self.radius * math.cos(self.angle)  # Gets the x and y from centre using trigonometry
-            self.rect.y = self.starty + self.radius * math.sin(self.angle)  # x + hcos(angle), y + hsin(angle)
+            self.rect.x = self.startx + self.radius * math.cos(self.angle)      # Gets the x and y from centre using trigonometry
+            self.rect.y = self.starty + self.radius * math.sin(self.angle)      # x + hcos(angle), y + hsin(angle)
 
     def draw(self, surface):
         cameraOffset = getOffset() #retrieves cameraoffset from player
