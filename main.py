@@ -118,7 +118,7 @@ def readData():
 	        SELECT Score, Time, Level, Name 
 	        FROM Leaderboard, User
 	        WHERE Leaderboard.userID = User.UserID 
-	        ORDER BY Score DESC, Time DESC, scoreId ASC
+	        ORDER BY Score DESC, Time ASC, scoreId ASC
 	        LIMIT 10;
 	        '''
 	# executing sql statement with try and except incase of errors
@@ -217,12 +217,12 @@ def gameLoop(dt,surface,clock):
 		global gameTime,done, score,coins
 
 		pygame.event.pump()
-		for events in pygame.event.get():#quit game event
+		for events in pygame.event.get(pygame.QUIT):#quit game event
 			if events.type == pygame.QUIT:
 				done = True
-				pygame.quit() 
-			if player.dead == True and pygame.key.get_pressed()[pygame.K_RETURN]: #redirect to deathloop when enter key pressed
-				return "gameOver"
+				pygame.quit()
+		if player.dead == True and pygame.key.get_pressed()[pygame.K_RETURN]: #redirect to deathloop when enter key pressed
+			return "gameOver"
 	#----------------- GAME LOGIC START--------------------------------
 
 		if player.dead == False:
@@ -422,7 +422,7 @@ def menuLoop(dt,surface,buttons,images,title):
 					paused = False
 
 	if clicked == "start": #BUTTON FUNCTIONS
-		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt","Level6.txt","Level7.txt"]
+		levels = ["Level0.txt","Level1.txt","Level2.txt","Level3.txt","Level4.txt","Level5.txt","Level6.txt","Level7.txt","Level8.txt"]
 		level = 0
 		player = Player(100,100)
 		gameTime = 0

@@ -188,7 +188,7 @@ class Player(Sprite):
 						self.past = 650
 						self.projectileArc(screen,True)
 
-				for events in pygame.event.get():
+				for events in pygame.event.get(pygame.MOUSEBUTTONDOWN):
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 1:
 						slash = self.slash(0) #moving attack
 					if events.type == pygame.MOUSEBUTTONDOWN and events.button == 3:
