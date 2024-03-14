@@ -27,3 +27,9 @@ Extra info:
 
 7 visible tiles at the left and 14 visible tiles to the right
 - Leave extra tiles aside each invisible side wall for "infinite" land effect.
+
+m key to toggle music
+
+To input a user into the database in the main menu
+- type a name on keyboard (no need to click on the text box)
+- press enter (name will turn green to confirm)
